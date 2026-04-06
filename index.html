@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>LEAD Bank · Tu Banco Digital</title>
-  <!-- Fuentes modernas -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <!-- Font Awesome 6 (iconos) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
@@ -22,7 +20,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow-x: hidden;
+      overflow: hidden;
     }
 
     .app-container {
@@ -30,17 +28,35 @@
       max-width: 100%;
       margin: 0;
       background: #ffffff;
-      box-shadow: none;
       overflow: hidden;
-      position: relative;
       height: 100vh;
       display: flex;
       flex-direction: column;
+      position: relative;
+    }
+
+    /* Ocultar scrollbar pero mantener funcionalidad */
+    .dashboard-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      background: #f0f2f5;
+      scroll-behavior: smooth;
+    }
+
+    /* Ocultar scrollbar en Chrome, Safari y Edge */
+    .dashboard-content::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* Ocultar scrollbar en Firefox */
+    .dashboard-content {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
 
     .screen {
       width: 100%;
-      transition: opacity 0.3s ease;
       background: #ffffff;
       flex: 1;
       overflow: hidden;
@@ -50,9 +66,9 @@
       display: none !important;
     }
 
-    /* Loading */
+    /* Pantalla de carga */
     .loading-screen {
-      position: fixed;
+      position: absolute;
       top: 0;
       left: 0;
       width: 100%;
@@ -64,9 +80,11 @@
       justify-content: center;
       z-index: 1000;
     }
+
     .loading-screen.hidden {
       display: none !important;
     }
+
     .spinner {
       width: 50px;
       height: 50px;
@@ -76,6 +94,7 @@
       animation: spin 1s linear infinite;
       margin-bottom: 1rem;
     }
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -90,10 +109,12 @@
       padding: 1.5rem;
       background: #ffffff;
     }
+
     .logo-bank {
       text-align: center;
       margin-bottom: 2rem;
     }
+
     .logo-icon {
       width: 70px;
       height: 70px;
@@ -102,11 +123,13 @@
       align-items: center;
       justify-content: center;
     }
+
     .custom-logo {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
+
     .logo-placeholder {
       width: 70px;
       height: 70px;
@@ -118,14 +141,14 @@
       color: white;
       font-weight: 700;
       font-size: 2rem;
-      box-shadow: 0 12px 18px -8px rgba(0,51,102,0.3);
     }
+
     .logo-bank h2 {
       font-size: 1.6rem;
       font-weight: 700;
       color: #003366;
-      letter-spacing: -0.5px;
     }
+
     .logo-bank p {
       color: #6c757d;
       font-size: 0.85rem;
@@ -135,6 +158,7 @@
     .input-group {
       margin-bottom: 1rem;
     }
+
     .input-group label {
       display: block;
       font-size: 0.8rem;
@@ -142,17 +166,20 @@
       color: #1e2a3a;
       margin-bottom: 0.4rem;
     }
+
     .input-icon {
       position: relative;
       display: flex;
       align-items: center;
     }
+
     .input-icon i {
       position: absolute;
       left: 14px;
       color: #8ba0bc;
       font-size: 0.9rem;
     }
+
     .input-icon input {
       width: 100%;
       padding: 0.85rem 1rem 0.85rem 2.5rem;
@@ -161,13 +188,13 @@
       font-family: 'Inter', sans-serif;
       font-size: 0.95rem;
       background: #ffffff;
-      transition: all 0.2s;
     }
+
     .input-icon input:focus {
       outline: none;
       border-color: #003366;
-      box-shadow: 0 0 0 3px rgba(0,51,102,0.1);
     }
+
     .btn-login {
       background: #003366;
       color: white;
@@ -178,12 +205,14 @@
       border: none;
       border-radius: 1.8rem;
       cursor: pointer;
-      transition: all 0.2s;
       margin-top: 0.8rem;
+      transition: all 0.2s;
     }
+
     .btn-login:active {
       transform: scale(0.98);
     }
+
     .error-message {
       background: #fee2e2;
       color: #b91c1c;
@@ -192,7 +221,6 @@
       border-radius: 1.2rem;
       margin-top: 1rem;
       text-align: center;
-      font-weight: 500;
     }
 
     /* Dashboard */
@@ -202,45 +230,27 @@
       height: 100vh;
       background: #f0f2f5;
     }
-    
-    .dashboard-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1rem;
-      background: #f0f2f5;
-      scroll-behavior: smooth;
-    }
-    
-    .dashboard-content::-webkit-scrollbar {
-      width: 3px;
-    }
-    
-    .dashboard-content::-webkit-scrollbar-track {
-      background: #e2e8f0;
-      border-radius: 10px;
-    }
-    
-    .dashboard-content::-webkit-scrollbar-thumb {
-      background: #003366;
-      border-radius: 10px;
-    }
-    
+
     .dashboard-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.2rem;
+      padding: 0 0.2rem;
     }
+
     .welcome h3 {
       font-size: 1.1rem;
       font-weight: 600;
       color: #1e2a3a;
     }
+
     .welcome p {
       font-size: 0.7rem;
       color: #6c757d;
       margin-top: 0.1rem;
     }
+
     .logout-btn {
       background: white;
       border: 1px solid #e2e8f0;
@@ -253,51 +263,148 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      transition: all 0.2s;
     }
 
-    /* Card estilo LEAD Bank */
+    .logout-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Tarjeta */
     .bank-card {
       background: linear-gradient(135deg, #00264d 0%, #003366 100%);
       border-radius: 1.5rem;
       padding: 1.2rem;
       margin-bottom: 1.2rem;
       color: white;
-      box-shadow: 0 8px 20px -8px rgba(0,51,102,0.25);
+      cursor: pointer;
+      transition: all 0.2s;
     }
+
+    .bank-card:active {
+      transform: scale(0.98);
+    }
+
     .card-chip {
       display: flex;
       justify-content: space-between;
       margin-bottom: 1.2rem;
     }
+
     .chip-icon {
       font-size: 1.6rem;
-      opacity: 0.8;
     }
+
     .card-brand i {
       font-size: 1.5rem;
     }
+
     .card-number {
       letter-spacing: 1.5px;
       font-size: 0.75rem;
       margin-bottom: 0.8rem;
-      font-weight: 400;
       opacity: 0.8;
     }
-    .balance-label {
+
+    .card-expiry {
       font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
       opacity: 0.7;
-    }
-    .balance-amount {
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-top: 0.1rem;
-      transition: all 0.2s ease;
+      margin-top: 0.3rem;
     }
 
-    /* Saldo grande */
+    .card-holder {
+      font-size: 0.7rem;
+      font-weight: 500;
+      margin-top: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .tap-card-hint {
+      font-size: 0.6rem;
+      opacity: 0.6;
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+
+    /* Modal */
+    .card-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .card-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .card-modal-content {
+      background: linear-gradient(135deg, #00264d 0%, #003366 100%);
+      border-radius: 2rem;
+      padding: 2rem;
+      width: 85%;
+      max-width: 350px;
+      color: white;
+      position: relative;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+
+    .card-modal.active .card-modal-content {
+      transform: scale(1);
+    }
+
+    .card-modal-close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+
+    .modal-card-number {
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      margin: 1.5rem 0 1rem;
+      text-align: center;
+    }
+
+    .modal-card-details {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      font-size: 0.8rem;
+    }
+
+    .btn-reveal {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      color: white;
+      padding: 0.6rem 1rem;
+      border-radius: 2rem;
+      width: 100%;
+      margin-top: 1rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .btn-reveal:active {
+      transform: scale(0.98);
+    }
+
+    /* Saldo */
     .balance-big {
       background: white;
       border-radius: 1.2rem;
@@ -306,69 +413,109 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
       border: 1px solid #eef2f6;
       cursor: pointer;
-      transition: all 0.2s ease;
-      user-select: none;
+      transition: all 0.2s;
     }
+
     .balance-big:active {
       transform: scale(0.98);
       background: #f8fafc;
     }
-    .balance-big span:first-child {
-      font-weight: 500;
-      color: #4a5568;
-      font-size: 0.85rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+
     .balance-big .big-number {
       font-size: 1.5rem;
       font-weight: 800;
       color: #003366;
-      transition: all 0.2s ease;
     }
+
     .tap-hint {
       font-size: 0.55rem;
       color: #8ba0bc;
       margin-left: 6px;
-      font-weight: normal;
+    }
+
+    /* Datos cuenta */
+    .account-details {
+      background: white;
+      border-radius: 1.2rem;
+      padding: 1rem;
+      margin-bottom: 1.2rem;
+      border: 1px solid #eef2f6;
+    }
+
+    .account-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: #6c757d;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .account-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f0f2f5;
+      font-size: 0.8rem;
+    }
+
+    .account-row:last-child {
+      border-bottom: none;
+    }
+
+    .account-label {
+      font-weight: 500;
+      color: #4a5568;
+    }
+
+    .account-value {
+      color: #1e2a3a;
+      font-family: monospace;
     }
 
     /* Transacciones */
     .transactions-title {
       display: flex;
       justify-content: space-between;
-      align-items: center;
       margin-bottom: 0.8rem;
       font-weight: 600;
-      color: #1e2a3a;
       font-size: 0.85rem;
     }
+
     .transaction-list {
-      background: #ffffff;
+      background: white;
       border-radius: 1.2rem;
       overflow: hidden;
       border: 1px solid #edf2f7;
       margin-bottom: 0.5rem;
     }
+
     .transaction-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0.8rem 1rem;
       border-bottom: 1px solid #f0f2f5;
+      transition: background 0.2s;
     }
+
+    .transaction-item:active {
+      background: #f8fafc;
+    }
+
     .transaction-item:last-child {
       border-bottom: none;
     }
+
     .transaction-info {
       display: flex;
       align-items: center;
       gap: 10px;
     }
+
     .transaction-icon {
       width: 36px;
       height: 36px;
@@ -378,65 +525,63 @@
       align-items: center;
       justify-content: center;
       color: #003366;
-      font-size: 0.9rem;
     }
+
     .transaction-details h4 {
       font-size: 0.85rem;
       font-weight: 600;
-      margin-bottom: 0.1rem;
-      color: #1e2a3a;
     }
+
     .transaction-details p {
       font-size: 0.65rem;
       color: #7f8c8d;
     }
+
     .transaction-amount {
       font-weight: 700;
       font-size: 0.9rem;
     }
+
     .positive {
       color: #2c7a4d;
     }
 
     /* Barra de navegación */
     .bottom-nav {
-      background: #ffffff;
+      background: white;
       border-top: 1px solid #edf2f7;
-      padding: 0.5rem 0.5rem 0.3rem 0.5rem;
+      padding: 0.5rem 0.5rem 0.3rem;
       display: flex;
       justify-content: space-around;
-      align-items: center;
-      width: 100%;
       flex-shrink: 0;
     }
+
     .nav-item {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 0.2rem;
       cursor: pointer;
-      transition: all 0.2s;
       padding: 0.3rem 0;
-      border-radius: 0.8rem;
       flex: 1;
       text-align: center;
       max-width: 20%;
+      transition: all 0.2s;
     }
+
+    .nav-item:active {
+      transform: scale(0.95);
+    }
+
     .nav-item i {
       font-size: 1.1rem;
       color: #94a3b8;
     }
+
     .nav-item span {
       font-size: 0.6rem;
       font-weight: 500;
       color: #94a3b8;
-    }
-    .nav-item.active i,
-    .nav-item.active span {
-      color: #003366;
-    }
-    .nav-item:active {
-      transform: scale(0.95);
     }
 
     /* Toast */
@@ -450,84 +595,41 @@
       padding: 0.7rem 1.2rem;
       border-radius: 1.5rem;
       font-size: 0.75rem;
-      font-weight: 500;
       z-index: 1000;
       opacity: 0;
       transition: all 0.3s ease;
       pointer-events: none;
       max-width: 85%;
       text-align: center;
-      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
       border-left: 3px solid #ffd700;
     }
+
     .toast-message.show {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
-    .toast-message i {
-      margin-right: 6px;
-      color: #ffd700;
-    }
-
-    /* Temporizador inactividad */
-    .inactivity-timer {
-      position: fixed;
-      bottom: 10px;
-      left: 10px;
-      font-size: 0.55rem;
-      color: #8ba0bc;
-      background: rgba(255,255,255,0.9);
-      padding: 2px 8px;
-      border-radius: 12px;
-      z-index: 100;
-      pointer-events: none;
-    }
-
-    @media (max-width: 480px) {
-      .nav-item i {
-        font-size: 1rem;
-      }
-      .nav-item span {
-        font-size: 0.55rem;
-      }
-      .balance-amount {
-        font-size: 1.5rem;
-      }
-      .big-number {
-        font-size: 1.3rem;
-      }
-      .bottom-nav {
-        padding: 0.4rem 0.5rem 0.2rem 0.5rem;
-      }
-    }
   </style>
 </head>
 <body>
-<div class="app-container" id="appRoot">
+<div class="app-container">
   <!-- LOGIN -->
   <div id="loginScreen" class="screen">
     <div class="login-content">
       <div class="logo-bank">
         <div class="logo-icon">
-          <img src="lead-nepa.png" alt="LEAD Bank" class="custom-logo" id="bankLogo" onerror="handleLogoError()">
-          <div class="logo-placeholder" id="logoPlaceholder" style="display: none;">L</div>
+          <img src="lead-nepa.png" alt="LEAD Bank" class="custom-logo" id="bankLogo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="logo-placeholder" style="display: none;">L</div>
         </div>
         <h2>LEAD Bank</h2>
         <p>Liderando tu futuro financiero</p>
       </div>
       <div class="input-group">
         <label>Usuario</label>
-        <div class="input-icon">
-          <i class="fas fa-envelope"></i>
-          <input type="text" id="loginUser" placeholder="Usuario" autocomplete="off">
-        </div>
+        <div class="input-icon"><i class="fas fa-envelope"></i><input type="text" id="loginUser" placeholder="Usuario" autocomplete="off"></div>
       </div>
       <div class="input-group">
         <label>Contraseña</label>
-        <div class="input-icon">
-          <i class="fas fa-lock"></i>
-          <input type="password" id="loginPass" placeholder="Contraseña">
-        </div>
+        <div class="input-icon"><i class="fas fa-lock"></i><input type="password" id="loginPass" placeholder="Contraseña"></div>
       </div>
       <button class="btn-login" id="doLoginBtn"><i class="fas fa-arrow-right-to-bracket"></i> Acceder</button>
       <div id="loginError" class="error-message hidden"></div>
@@ -539,412 +641,216 @@
     <div class="spinner"></div>
     <p><i class="fas fa-shield-alt"></i> Verificando credenciales...</p>
     <p style="font-size: 0.75rem; margin-top: 0.5rem; color: #6c757d;">Conectando con LEAD Bank Secure</p>
-    <p style="font-size: 0.7rem; margin-top: 0.3rem; color: #8ba0bc;">Cifrando conexión SSL...</p>
   </div>
 
   <!-- DASHBOARD -->
   <div id="dashboardScreen" class="screen hidden">
     <div class="dashboard-wrapper">
-      <div class="dashboard-content" id="dashboardContent">
+      <div class="dashboard-content">
         <div class="dashboard-header">
-          <div class="welcome">
-            <h3>Hola, <span id="userNameSpan">Invitado</span></h3>
-            <p><i class="fas fa-credit-card"></i> Cuenta Protegida</p>
-          </div>
+          <div class="welcome"><h3>Hola, <span id="userNameSpan">Invitado</span></h3><p><i class="fas fa-credit-card"></i> Cuenta Protegida</p></div>
           <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Salir</button>
         </div>
 
-        <!-- Tarjeta -->
-        <div class="bank-card">
-          <div class="card-chip">
-            <div class="chip-icon"><i class="fas fa-microchip"></i></div>
-            <div class="card-brand"><i class="fab fa-cc-mastercard"></i></div>
-          </div>
+        <div class="bank-card" id="cardTapArea">
+          <div class="card-chip"><div class="chip-icon"><i class="fas fa-microchip"></i></div><div class="card-brand"><i class="fab fa-cc-mastercard"></i></div></div>
           <div class="card-number">••••  ••••  ••••  4821</div>
-          <div class="card-balance">
-            <div class="balance-label">Saldo disponible</div>
-            <div class="balance-amount" id="cardBalanceAmount">$0.00</div>
+          <div class="card-expiry">Válida hasta: 12/28</div>
+          <div class="card-holder" id="cardHolderName">TITULAR</div>
+          <div class="tap-card-hint"><i class="fas fa-hand-pointer"></i> Toca para ver detalles</div>
+        </div>
+
+        <div id="cardModal" class="card-modal">
+          <div class="card-modal-content">
+            <div class="card-modal-close" id="closeModalBtn">&times;</div>
+            <div style="text-align: center;"><i class="fab fa-cc-mastercard" style="font-size: 2rem;"></i></div>
+            <div class="modal-card-number">••••  ••••  ••••  4821</div>
+            <div class="modal-card-details"><span>Válida hasta: 12/28</span><span>CVV: <span id="modalCvv">•••</span></span></div>
+            <div class="modal-card-holder" id="modalCardHolder">TITULAR</div>
+            <button class="btn-reveal" id="revealCardBtn">🔓 Revelar datos completos</button>
           </div>
         </div>
 
-        <!-- Saldo grande con efecto TAP -->
         <div class="balance-big" id="balanceTapArea">
-          <span>
-            <i class="fas fa-wallet"></i> Tu saldo total
-            <span class="tap-hint">👆 toca para ocultar</span>
-          </span>
+          <span><i class="fas fa-wallet"></i> Tu saldo total<span class="tap-hint">👆 toca para ocultar</span></span>
           <span class="big-number" id="mainBalanceDisplay">$0.00</span>
         </div>
 
-        <!-- Transacciones -->
-        <div class="transactions-title">
-          <span><i class="fas fa-history"></i> Últimos movimientos</span>
-          <span style="font-size:0.6rem; background:#e8f0fe; padding:2px 10px; border-radius:20px; color:#003366;">2 transacciones</span>
+        <div class="account-details">
+          <div class="account-title"><i class="fas fa-university"></i> Datos de tu cuenta</div>
+          <div class="account-row"><span class="account-label">Banco:</span><span class="account-value">Lead Bank</span></div>
+          <div class="account-row"><span class="account-label">Dirección:</span><span class="account-value">1801 Main St., Kansas City, MO 64108</span></div>
+          <div class="account-row"><span class="account-label">Número de cuenta:</span><span class="account-value">217693777568</span></div>
+          <div class="account-row"><span class="account-label">Número de ruta:</span><span class="account-value">101019644</span></div>
+          <div class="account-row"><span class="account-label">Tipo de cuenta:</span><span class="account-value">Checking</span></div>
         </div>
-        <div class="transaction-list" id="transactionsContainer">
-          <div class="transaction-item" style="justify-content:center; color:#aaa;">Cargando...</div>
-        </div>
+
+        <div class="transactions-title"><span><i class="fas fa-history"></i> Últimos movimientos</span><span style="font-size:0.6rem; background:#e8f0fe; padding:2px 10px; border-radius:20px; color:#003366;">2</span></div>
+        <div class="transaction-list" id="transactionsContainer"></div>
       </div>
       
-      <!-- Barra de navegación -->
       <div class="bottom-nav">
-        <div class="nav-item" data-action="inicio">
-          <i class="fas fa-home"></i>
-          <span>Inicio</span>
-        </div>
-        <div class="nav-item" data-action="transferencias">
-          <i class="fas fa-exchange-alt"></i>
-          <span>Transferir</span>
-        </div>
-        <div class="nav-item" data-action="configuracion">
-          <i class="fas fa-cog"></i>
-          <span>Ajustes</span>
-        </div>
-        <div class="nav-item" data-action="prestamos">
-          <i class="fas fa-hand-holding-usd"></i>
-          <span>Préstamos</span>
-        </div>
-        <div class="nav-item" data-action="seguros">
-          <i class="fas fa-shield-alt"></i>
-          <span>Seguros</span>
-        </div>
+        <div class="nav-item" data-action="inicio"><i class="fas fa-home"></i><span>Inicio</span></div>
+        <div class="nav-item" data-action="transferencias"><i class="fas fa-exchange-alt"></i><span>Transferir</span></div>
+        <div class="nav-item" data-action="configuracion"><i class="fas fa-cog"></i><span>Ajustes</span></div>
+        <div class="nav-item" data-action="prestamos"><i class="fas fa-hand-holding-usd"></i><span>Préstamos</span></div>
+        <div class="nav-item" data-action="seguros"><i class="fas fa-shield-alt"></i><span>Seguros</span></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Toast -->
-<div id="toastMsg" class="toast-message">
-  <i class="fas fa-exclamation-triangle"></i> 
-  <span>Acceso restringido · Regulariza tus incumplimientos tributarios para habilitar todas las funciones de LEAD Bank</span>
-</div>
-
-<!-- Indicador de inactividad -->
-<div id="inactivityTimer" class="inactivity-timer">⏱️ Sesión activa</div>
+<div id="toastMsg" class="toast-message"><i class="fas fa-exclamation-triangle"></i> <span>Acceso restringido · Regulariza tus incumplimientos tributarios</span></div>
 
 <script>
-  // ==================== CONFIGURACIÓN ====================
-  const INACTIVITY_TIMEOUT = 120000; // 2 minutos de inactividad
-  let inactivityTimer = null;
-  let warningTimer = null;
-  
-  // ==================== USUARIOS LEAD BANK ====================
-  const MOCK_DB = {
-    users: [
-      // Usuario 1 - Invitado (original)
-      {
-        id: 1,
-        username: "invitado",
-        password: "LeadBank2026!",
-        fullName: "Carlos Méndez",
-        balance: 2275.00,
-        transactions: [
-          { id: "t1", description: "Depósito por transferencia bancaria", amount: 2075.00, date: "2026-04-02", type: "income" },
-          { id: "t2", description: "Abono por nómina", amount: 200.00, date: "2026-04-02", type: "income" }
-        ]
-      },
-      // Usuario 2 - Francisco Mejía (NUEVO)
-      {
-        id: 2,
-        username: "bartolonfausto548@gmail.com",
-        password: "Bartolon meji",
-        fullName: "Francisco Mejía",
-        balance: 2275.00,
-        transactions: [
-          { id: "t3", description: "Depósito por transferencia bancaria", amount: 2075.00, date: "2026-04-06", type: "income" },
-          { id: "t4", description: "Transferencia bancaria recibida", amount: 200.00, date: "2026-04-06", type: "income" }
-        ]
-      }
-    ]
-  };
+  // USUARIOS
+  const USERS = [
+    { username: "invitado", password: "LeadBank2026!", name: "Carlos Méndez", cardHolder: "CARLOS MENDEZ", balance: 2275.00,
+      transactions: [
+        { desc: "Depósito por transferencia bancaria", amount: 2075.00, date: "2026-04-02" },
+        { desc: "Abono por nómina", amount: 200.00, date: "2026-04-02" }
+      ] },
+    { username: "bartolonfausto548@gmail.com", password: "Bartolon meji", name: "Francisco Mejía", cardHolder: "FRANCISCO MEJIA", balance: 2275.00,
+      transactions: [
+        { desc: "Depósito por transferencia bancaria", amount: 2075.00, date: "2026-04-06" },
+        { desc: "Transferencia bancaria recibida", amount: 200.00, date: "2026-04-06" }
+      ] }
+  ];
 
   let currentUser = null;
   let balanceVisible = true;
-  let hiddenBalanceValue = null;
 
-  function formatMoney(amount) {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(amount);
+  function formatMoney(amount) { return '$' + amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  
+  function showToast(msg) { 
+    let toast = document.getElementById('toastMsg'); 
+    toast.querySelector('span').innerHTML = msg; 
+    toast.classList.add('show'); 
+    setTimeout(() => toast.classList.remove('show'), 2500); 
   }
 
-  function showToast(message) {
-    const toast = document.getElementById('toastMsg');
-    toast.querySelector('span').innerHTML = message;
-    toast.classList.add('show');
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 2500);
-  }
-
-  // ==================== FUNCIONES DE INACTIVIDAD ====================
-  function resetInactivityTimer() {
-    if (inactivityTimer) clearTimeout(inactivityTimer);
-    if (warningTimer) clearTimeout(warningTimer);
-    
-    const timerDiv = document.getElementById('inactivityTimer');
-    timerDiv.innerHTML = '⏱️ Sesión activa';
-    timerDiv.style.color = '#8ba0bc';
-    
-    inactivityTimer = setTimeout(() => {
-      timerDiv.innerHTML = '⚠️ Sesión por expirar en 10 segundos...';
-      timerDiv.style.color = '#e67e22';
-      showToast('⚠️ Por inactividad, la sesión cerrará en 10 segundos');
-      
-      warningTimer = setTimeout(() => {
-        if (currentUser) {
-          showToast('🔒 Sesión cerrada por inactividad');
-          showLoginScreen();
-        }
-      }, 10000);
-    }, INACTIVITY_TIMEOUT);
-  }
-
-  function setupActivityListeners() {
-    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
-    events.forEach(event => {
-      document.addEventListener(event, resetInactivityTimer);
-    });
-  }
-
-  // ==================== FUNCIONES DE UI ====================
-  function toggleBalanceVisibility() {
-    const balanceElement = document.getElementById('mainBalanceDisplay');
-    const cardBalanceElement = document.getElementById('cardBalanceAmount');
-    const tapHint = document.querySelector('.tap-hint');
-    
-    if (balanceVisible) {
-      hiddenBalanceValue = balanceElement.innerText;
-      balanceElement.innerText = '••••••';
-      cardBalanceElement.innerText = '••••••';
-      balanceVisible = false;
-      tapHint.innerHTML = '👆 toca para mostrar';
-      showToast('🔒 Saldo oculto');
-    } else {
-      balanceElement.innerText = hiddenBalanceValue || formatMoney(currentUser.balance);
-      cardBalanceElement.innerText = hiddenBalanceValue || formatMoney(currentUser.balance);
-      balanceVisible = true;
-      tapHint.innerHTML = '👆 toca para ocultar';
-      showToast('👁️ Saldo visible');
-    }
-  }
-
-  function getFormattedDate(dateString) {
-    const parts = dateString.split('-');
-    if (parts.length !== 3) return dateString;
-    
-    const month = parseInt(parts[1], 10);
-    const day = parseInt(parts[2], 10);
-    
-    const monthNames = [
-      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
-    ];
-    
-    return `${day} de ${monthNames[month - 1]}`;
-  }
-
-  function renderDashboard() {
-    if (!currentUser) return;
-    document.getElementById('userNameSpan').innerText = currentUser.fullName;
-    const balanceFormatted = formatMoney(currentUser.balance);
-    
-    balanceVisible = true;
-    document.getElementById('mainBalanceDisplay').innerText = balanceFormatted;
-    document.getElementById('cardBalanceAmount').innerText = balanceFormatted;
-    document.querySelector('.tap-hint').innerHTML = '👆 toca para ocultar';
-
-    const container = document.getElementById('transactionsContainer');
-    if (!currentUser.transactions || currentUser.transactions.length === 0) {
-      container.innerHTML = `<div class="transaction-item" style="justify-content:center; color:#aaa;">No hay movimientos</div>`;
-      return;
-    }
-
-    // Mostrar todas las transacciones (ordenadas por fecha descendente)
-    const sortedTransactions = [...currentUser.transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+  function cargarDashboard(user) {
+    document.getElementById('userNameSpan').innerText = user.name;
+    document.getElementById('cardHolderName').innerText = user.cardHolder;
+    document.getElementById('modalCardHolder').innerText = user.cardHolder;
+    document.getElementById('mainBalanceDisplay').innerText = formatMoney(user.balance);
     
     let html = '';
-    sortedTransactions.forEach(tx => {
-      const amountClass = tx.type === 'income' ? 'positive' : 'negative';
-      const sign = tx.type === 'income' ? '+' : '-';
-      const icon = tx.type === 'income' ? '<i class="fas fa-arrow-down"></i>' : '<i class="fas fa-arrow-up"></i>';
-      const formattedDate = getFormattedDate(tx.date);
-      
-      html += `
-        <div class="transaction-item">
-          <div class="transaction-info">
-            <div class="transaction-icon">${icon}</div>
-            <div class="transaction-details">
-              <h4>${escapeHtml(tx.description)}</h4>
-              <p>${formattedDate}</p>
-            </div>
+    let monthNames = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    
+    for (let tx of user.transactions) {
+      let dateParts = tx.date.split('-');
+      let formattedDate = parseInt(dateParts[2]) + ' de ' + monthNames[parseInt(dateParts[1])-1];
+      html += `<div class="transaction-item">
+        <div class="transaction-info">
+          <div class="transaction-icon"><i class="fas fa-arrow-down"></i></div>
+          <div class="transaction-details">
+            <h4>${tx.desc}</h4>
+            <p>${formattedDate}</p>
           </div>
-          <div class="transaction-amount ${amountClass}">${sign} ${formatMoney(Math.abs(tx.amount))}</div>
         </div>
-      `;
-    });
+        <div class="transaction-amount positive">+ ${formatMoney(tx.amount)}</div>
+      </div>`;
+    }
+    document.getElementById('transactionsContainer').innerHTML = html;
+  }
+
+  // LOGIN
+  document.getElementById('doLoginBtn').onclick = function() {
+    let username = document.getElementById('loginUser').value.trim();
+    let password = document.getElementById('loginPass').value;
+    let errorDiv = document.getElementById('loginError');
     
-    container.innerHTML = html;
-  }
-
-  function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-      if(m === '&') return '&amp;';
-      if(m === '<') return '&lt;';
-      if(m === '>') return '&gt;';
-      return m;
-    });
-  }
-
-  function attemptLogin(username, password) {
-    const foundUser = MOCK_DB.users.find(u => u.username === username && u.password === password);
-    if (foundUser) return { success: true, user: foundUser };
-    return { success: false, message: "Credenciales incorrectas" };
-  }
-
-  function showLoginError(msg) {
-    const errorDiv = document.getElementById('loginError');
-    errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${msg}`;
-    errorDiv.classList.remove('hidden');
-    setTimeout(() => {
-      errorDiv.classList.add('hidden');
-    }, 3000);
-  }
-
-  function showLoginScreen() {
-    document.getElementById('loginScreen').classList.remove('hidden');
-    document.getElementById('dashboardScreen').classList.add('hidden');
-    document.getElementById('loadingScreen').classList.add('hidden');
-    document.getElementById('loginUser').value = '';
-    document.getElementById('loginPass').value = '';
-    document.getElementById('loginError').classList.add('hidden');
-    
-    if (inactivityTimer) clearTimeout(inactivityTimer);
-    if (warningTimer) clearTimeout(warningTimer);
-    
-    currentUser = null;
-    const timerDiv = document.getElementById('inactivityTimer');
-    timerDiv.innerHTML = '⏱️ Sesión activa';
-    timerDiv.style.color = '#8ba0bc';
-  }
-
-  function showDashboardScreen(user) {
-    currentUser = user;
-    renderDashboard();
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('loadingScreen').classList.add('hidden');
-    document.getElementById('dashboardScreen').classList.remove('hidden');
-    
-    resetInactivityTimer();
-  }
-
-  function showLoadingAndLogin(userData) {
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('loadingScreen').classList.remove('hidden');
-    document.getElementById('dashboardScreen').classList.add('hidden');
-    
-    setTimeout(() => {
-      showDashboardScreen(userData);
-    }, 3500);
-  }
-
-  function setupBottomNav() {
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(item => {
-      item.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const action = item.getAttribute('data-action');
-        if (action === 'inicio') {
-          document.querySelector('.dashboard-content')?.scrollTo({ top: 0, behavior: 'smooth' });
-          showToast('✨ Inicio · Para acceder a más funciones, regulariza tus incumplimientos tributarios');
-        } else {
-          showToast('⚠️ Acceso restringido · Regulariza tus incumplimientos tributarios para usar esta función');
-        }
-        resetInactivityTimer();
-      });
-    });
-  }
-
-  // ==================== EVENTOS ====================
-  document.getElementById('doLoginBtn').addEventListener('click', () => {
-    const username = document.getElementById('loginUser').value.trim();
-    const password = document.getElementById('loginPass').value;
     if (!username || !password) {
-      showLoginError("Ingresa usuario y contraseña");
+      errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Ingresa usuario y contraseña';
+      errorDiv.classList.remove('hidden');
       return;
     }
     
-    const loginBtn = document.getElementById('doLoginBtn');
-    loginBtn.disabled = true;
-    loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validando...';
+    let user = USERS.find(u => u.username === username && u.password === password);
     
-    const result = attemptLogin(username, password);
-    if (result.success) {
-      showLoadingAndLogin(result.user);
-      setTimeout(() => {
-        loginBtn.disabled = false;
-        loginBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Acceder';
-      }, 3800);
-    } else {
-      showLoginError(result.message);
-      loginBtn.disabled = false;
-      loginBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Acceder';
+    if (!user) {
+      errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Credenciales incorrectas';
+      errorDiv.classList.remove('hidden');
+      return;
     }
-  });
-
-  const passInput = document.getElementById('loginPass');
-  const userInput = document.getElementById('loginUser');
-  const loginHandler = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      document.getElementById('doLoginBtn').click();
+    
+    errorDiv.classList.add('hidden');
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('loadingScreen').classList.remove('hidden');
+    
+    setTimeout(function() {
+      currentUser = user;
+      cargarDashboard(user);
+      document.getElementById('loadingScreen').classList.add('hidden');
+      document.getElementById('dashboardScreen').classList.remove('hidden');
+    }, 2000);
+  };
+  
+  // Cerrar sesión
+  document.getElementById('logoutBtn').onclick = function() {
+    document.getElementById('dashboardScreen').classList.add('hidden');
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    currentUser = null;
+  };
+  
+  // Ocultar/mostrar saldo
+  document.getElementById('balanceTapArea').onclick = function() {
+    if (!currentUser) return;
+    let balanceEl = document.getElementById('mainBalanceDisplay');
+    let hint = document.querySelector('.tap-hint');
+    if (balanceVisible) {
+      balanceEl.innerText = '••••••';
+      balanceVisible = false;
+      hint.innerHTML = '👆 toca para mostrar';
+      showToast('🔒 Saldo oculto');
+    } else {
+      balanceEl.innerText = formatMoney(currentUser.balance);
+      balanceVisible = true;
+      hint.innerHTML = '👆 toca para ocultar';
+      showToast('👁️ Saldo visible');
     }
   };
-  passInput.addEventListener('keypress', loginHandler);
-  userInput.addEventListener('keypress', loginHandler);
-
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    showLoginScreen();
-    const loginBtn = document.getElementById('doLoginBtn');
-    loginBtn.disabled = false;
-    loginBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Acceder';
-    if (inactivityTimer) clearTimeout(inactivityTimer);
-    if (warningTimer) clearTimeout(warningTimer);
-  });
-
-  const balanceTapArea = document.getElementById('balanceTapArea');
-  if (balanceTapArea) {
-    balanceTapArea.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (currentUser) {
-        toggleBalanceVisibility();
-        resetInactivityTimer();
+  
+  // Tarjeta táctil
+  document.getElementById('cardTapArea').onclick = function() {
+    if (!currentUser) return;
+    document.getElementById('cardModal').classList.add('active');
+  };
+  
+  document.getElementById('closeModalBtn').onclick = function() {
+    document.getElementById('cardModal').classList.remove('active');
+  };
+  
+  document.getElementById('revealCardBtn').onclick = function() {
+    showToast('⚠️ Acceso restringido · Regulariza tus incumplimientos tributarios para revelar los datos de tu tarjeta');
+    let cvvEl = document.getElementById('modalCvv');
+    cvvEl.innerText = '❌';
+    setTimeout(() => cvvEl.innerText = '•••', 1000);
+  };
+  
+  document.getElementById('cardModal').onclick = function(e) {
+    if (e.target === this) this.classList.remove('active');
+  };
+  
+  // Navegación
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.onclick = function() {
+      let action = this.getAttribute('data-action');
+      if (action === 'inicio') {
+        document.querySelector('.dashboard-content')?.scrollTo({ top: 0, behavior: 'smooth' });
+        showToast('✨ Inicio · Regulariza tus incumplimientos tributarios');
+      } else {
+        showToast('⚠️ Acceso restringido · Regulariza tus incumplimientos tributarios para usar esta función');
       }
-    });
-  }
-
-  function handleLogoError() {
-    const img = document.getElementById('bankLogo');
-    const placeholder = document.getElementById('logoPlaceholder');
-    if (img) img.style.display = 'none';
-    if (placeholder) placeholder.style.display = 'flex';
-  }
-
-  setupActivityListeners();
-  setupBottomNav();
-
-  window.addEventListener('load', () => {
-    showLoginScreen();
-    const inicioNav = document.querySelector('.nav-item[data-action="inicio"]');
-    if (inicioNav) inicioNav.classList.add('active');
-    const navs = document.querySelectorAll('.nav-item');
-    navs.forEach(nav => {
-      nav.addEventListener('click', function() {
-        navs.forEach(n => n.classList.remove('active'));
-        this.classList.add('active');
-        resetInactivityTimer();
-      });
-    });
+    };
   });
+  
+  // Enter para login
+  document.getElementById('loginPass').onkeypress = function(e) { if (e.key === 'Enter') document.getElementById('doLoginBtn').click(); };
+  document.getElementById('loginUser').onkeypress = function(e) { if (e.key === 'Enter') document.getElementById('doLoginBtn').click(); };
 </script>
 </body>
 </html>
