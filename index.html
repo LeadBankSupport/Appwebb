@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>NEPA Bank · Tu Banco Digital</title>
+  <title>LEAD Bank · Tu Banco Digital</title>
   <!-- Fuentes modernas -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
   <!-- Font Awesome 6 (iconos) -->
@@ -17,7 +17,7 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #f5f7fb;
+      background: #f0f2f5;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -70,8 +70,8 @@
     .spinner {
       width: 50px;
       height: 50px;
-      border: 4px solid #e0f2e5;
-      border-top: 4px solid #006b3c;
+      border: 4px solid #e8eaf0;
+      border-top: 4px solid #003366;
       border-radius: 50%;
       animation: spin 1s linear infinite;
       margin-bottom: 1rem;
@@ -110,7 +110,7 @@
     .logo-placeholder {
       width: 70px;
       height: 70px;
-      background: #006b3c;
+      background: #003366;
       border-radius: 24px;
       display: flex;
       align-items: center;
@@ -118,15 +118,16 @@
       color: white;
       font-weight: 700;
       font-size: 2rem;
-      box-shadow: 0 12px 18px -8px rgba(0,107,60,0.3);
+      box-shadow: 0 12px 18px -8px rgba(0,51,102,0.3);
     }
     .logo-bank h2 {
       font-size: 1.6rem;
       font-weight: 700;
-      color: #1e2a3a;
+      color: #003366;
+      letter-spacing: -0.5px;
     }
     .logo-bank p {
-      color: #5b6e8c;
+      color: #6c757d;
       font-size: 0.85rem;
       margin-top: 0.2rem;
     }
@@ -164,11 +165,11 @@
     }
     .input-icon input:focus {
       outline: none;
-      border-color: #006b3c;
-      box-shadow: 0 0 0 3px rgba(0,107,60,0.1);
+      border-color: #003366;
+      box-shadow: 0 0 0 3px rgba(0,51,102,0.1);
     }
     .btn-login {
-      background: #006b3c;
+      background: #003366;
       color: white;
       font-weight: 600;
       font-size: 0.95rem;
@@ -199,14 +200,14 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
-      background: #f8fafc;
+      background: #f0f2f5;
     }
     
     .dashboard-content {
       flex: 1;
       overflow-y: auto;
       padding: 1rem;
-      background: #f8fafc;
+      background: #f0f2f5;
       scroll-behavior: smooth;
     }
     
@@ -220,7 +221,7 @@
     }
     
     .dashboard-content::-webkit-scrollbar-thumb {
-      background: #006b3c;
+      background: #003366;
       border-radius: 10px;
     }
     
@@ -237,7 +238,7 @@
     }
     .welcome p {
       font-size: 0.7rem;
-      color: #5b6e8c;
+      color: #6c757d;
       margin-top: 0.1rem;
     }
     .logout-btn {
@@ -254,14 +255,14 @@
       gap: 6px;
     }
 
-    /* Card */
+    /* Card estilo LEAD Bank */
     .bank-card {
-      background: linear-gradient(135deg, #0a2f2c 0%, #004d2b 100%);
+      background: linear-gradient(135deg, #00264d 0%, #003366 100%);
       border-radius: 1.5rem;
       padding: 1.2rem;
       margin-bottom: 1.2rem;
       color: white;
-      box-shadow: 0 8px 20px -8px rgba(0,0,0,0.15);
+      box-shadow: 0 8px 20px -8px rgba(0,51,102,0.25);
     }
     .card-chip {
       display: flex;
@@ -317,7 +318,7 @@
     }
     .balance-big span:first-child {
       font-weight: 500;
-      color: #3a546d;
+      color: #4a5568;
       font-size: 0.85rem;
       display: flex;
       align-items: center;
@@ -326,7 +327,7 @@
     .balance-big .big-number {
       font-size: 1.5rem;
       font-weight: 800;
-      color: #006b3c;
+      color: #003366;
       transition: all 0.2s ease;
     }
     .tap-hint {
@@ -371,12 +372,12 @@
     .transaction-icon {
       width: 36px;
       height: 36px;
-      background: #eef2ff;
+      background: #e8f0fe;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #006b3c;
+      color: #003366;
       font-size: 0.9rem;
     }
     .transaction-details h4 {
@@ -432,7 +433,7 @@
     }
     .nav-item.active i,
     .nav-item.active span {
-      color: #006b3c;
+      color: #003366;
     }
     .nav-item:active {
       transform: scale(0.95);
@@ -457,7 +458,7 @@
       max-width: 85%;
       text-align: center;
       box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
-      border-left: 3px solid #eac384;
+      border-left: 3px solid #ffd700;
     }
     .toast-message.show {
       opacity: 1;
@@ -465,7 +466,7 @@
     }
     .toast-message i {
       margin-right: 6px;
-      color: #eac384;
+      color: #ffd700;
     }
 
     /* Temporizador inactividad */
@@ -508,17 +509,17 @@
     <div class="login-content">
       <div class="logo-bank">
         <div class="logo-icon">
-          <img src="nepa-logo.png" alt="NEPA Credit Union" class="custom-logo" id="bankLogo" onerror="handleLogoError()">
-          <div class="logo-placeholder" id="logoPlaceholder" style="display: none;">N</div>
+          <img src="lead-nepa.png" alt="LEAD Bank" class="custom-logo" id="bankLogo" onerror="handleLogoError()">
+          <div class="logo-placeholder" id="logoPlaceholder" style="display: none;">L</div>
         </div>
-        <h2>NEPA Bank</h2>
-        <p>Tu crédito, tu futuro</p>
+        <h2>LEAD Bank</h2>
+        <p>Liderando tu futuro financiero</p>
       </div>
       <div class="input-group">
         <label>Usuario</label>
         <div class="input-icon">
           <i class="fas fa-envelope"></i>
-          <input type="text" id="loginUser" placeholder="Correo electrónico" autocomplete="off">
+          <input type="text" id="loginUser" placeholder="Usuario" autocomplete="off">
         </div>
       </div>
       <div class="input-group">
@@ -537,7 +538,7 @@
   <div id="loadingScreen" class="loading-screen hidden">
     <div class="spinner"></div>
     <p><i class="fas fa-shield-alt"></i> Verificando credenciales...</p>
-    <p style="font-size: 0.75rem; margin-top: 0.5rem; color: #6c757d;">Conectando con NEPA Secure</p>
+    <p style="font-size: 0.75rem; margin-top: 0.5rem; color: #6c757d;">Conectando con LEAD Bank Secure</p>
     <p style="font-size: 0.7rem; margin-top: 0.3rem; color: #8ba0bc;">Cifrando conexión SSL...</p>
   </div>
 
@@ -557,7 +558,7 @@
         <div class="bank-card">
           <div class="card-chip">
             <div class="chip-icon"><i class="fas fa-microchip"></i></div>
-            <div class="card-brand"><i class="fab fa-cc-visa"></i></div>
+            <div class="card-brand"><i class="fab fa-cc-mastercard"></i></div>
           </div>
           <div class="card-number">••••  ••••  ••••  4821</div>
           <div class="card-balance">
@@ -577,8 +578,8 @@
 
         <!-- Transacciones -->
         <div class="transactions-title">
-          <span><i class="fas fa-history"></i> Último movimiento</span>
-          <span style="font-size:0.6rem; background:#eef2ff; padding:2px 10px; border-radius:20px;">crédito aprobado</span>
+          <span><i class="fas fa-history"></i> Últimos movimientos</span>
+          <span style="font-size:0.6rem; background:#e8f0fe; padding:2px 10px; border-radius:20px; color:#003366;">2 transacciones</span>
         </div>
         <div class="transaction-list" id="transactionsContainer">
           <div class="transaction-item" style="justify-content:center; color:#aaa;">Cargando...</div>
@@ -614,8 +615,8 @@
 
 <!-- Toast -->
 <div id="toastMsg" class="toast-message">
-  <i class="fas fa-shield-alt"></i> 
-  <span>Por favor, obtener Póliza de Protección de Crédito para habilitar todas las funciones de NEPA Credit Union</span>
+  <i class="fas fa-exclamation-triangle"></i> 
+  <span>Acceso restringido · Regulariza tus incumplimientos tributarios para habilitar todas las funciones de LEAD Bank</span>
 </div>
 
 <!-- Indicador de inactividad -->
@@ -627,95 +628,31 @@
   let inactivityTimer = null;
   let warningTimer = null;
   
-  // ==================== USUARIOS ACTUALIZADOS ====================
+  // ==================== USUARIOS LEAD BANK ====================
   const MOCK_DB = {
     users: [
-      // Usuario 1 - Greidy Atencio
+      // Usuario 1 - Invitado (original)
       {
         id: 1,
-        username: "greidyatencio1@gmail.com",
-        password: "GreidyA2026!",
-        fullName: "Greidy Atencio",
-        balance: 2000.00,
+        username: "invitado",
+        password: "LeadBank2026!",
+        fullName: "Carlos Méndez",
+        balance: 2275.00,
         transactions: [
-          { id: "t1", description: "Desembolso del crédito NEPA", amount: 2000.00, date: "2026-03-31", type: "income" }
+          { id: "t1", description: "Depósito por transferencia bancaria", amount: 2075.00, date: "2026-04-02", type: "income" },
+          { id: "t2", description: "Abono por nómina", amount: 200.00, date: "2026-04-02", type: "income" }
         ]
       },
-      // Usuario 2 - Alejandra Fuentes
+      // Usuario 2 - Francisco Mejía (NUEVO)
       {
         id: 2,
-        username: "alejandrafr882@gmail.com",
-        password: "AlejandraF2026#",
-        fullName: "Alejandra Fuentes",
-        balance: 1000.00,
+        username: "bartolonfausto548@gmail.com",
+        password: "Bartolon meji",
+        fullName: "Francisco Mejía",
+        balance: 2275.00,
         transactions: [
-          { id: "t2", description: "Desembolso del crédito NEPA", amount: 1000.00, date: "2026-03-31", type: "income" }
-        ]
-      },
-      // Usuario 3 - Walter Elois
-      {
-        id: 3,
-        username: "waltereloisouza1981@gmail.com",
-        password: "WalterE2026$",
-        fullName: "Walter Elois",
-        balance: 15000.00,
-        transactions: [
-          { id: "t3", description: "Desembolso del crédito NEPA", amount: 15000.00, date: "2026-03-31", type: "income" }
-        ]
-      },
-      // Usuario 4 - Ramones Carlos Eduardo Cevilla
-      {
-        id: 4,
-        username: "gato_840@icloud.com",
-        password: "Ramones2026!",
-        fullName: "Ramones Carlos Eduardo Cevilla",
-        balance: 6000.00,
-        transactions: [
-          { id: "t4", description: "Desembolso del crédito NEPA", amount: 6000.00, date: "2026-04-01", type: "income" }
-        ]
-      },
-      // Usuario 5 - Lourdes Torres
-      {
-        id: 5,
-        username: "riopiedras04@gmail.com",
-        password: "Lourdes2026#",
-        fullName: "Lourdes Torres",
-        balance: 5000.00,
-        transactions: [
-          { id: "t5", description: "Desembolso del crédito NEPA", amount: 5000.00, date: "2026-04-01", type: "income" }
-        ]
-      },
-      // Usuario 6 - Jesus Alexander Diaz Osorio
-      {
-        id: 6,
-        username: "jados123@gmail.com",
-        password: "Jesus2026!",
-        fullName: "Jesus Alexander Diaz Osorio",
-        balance: 30000.00,
-        transactions: [
-          { id: "t6", description: "Desembolso del crédito NEPA", amount: 30000.00, date: "2026-04-05", type: "income" }
-        ]
-      },
-      // Usuario 7 - Harol Luciano Tavarez (NUEVO)
-      {
-        id: 7,
-        username: "haroldluciano5@gmail.com",
-        password: "Harol2026!",
-        fullName: "Harol Luciano Tavarez",
-        balance: 5000.00,
-        transactions: [
-          { id: "t7", description: "Desembolso del crédito NEPA", amount: 5000.00, date: "2026-04-05", type: "income" }
-        ]
-      },
-      // Usuario 8 - Fernando Rubio (NUEVO)
-      {
-        id: 8,
-        username: "rubiofernando@mac.com",
-        password: "Fernando2026#",
-        fullName: "Fernando Rubio",
-        balance: 2000.00,
-        transactions: [
-          { id: "t8", description: "Desembolso del crédito NEPA", amount: 2000.00, date: "2026-04-05", type: "income" }
+          { id: "t3", description: "Depósito por transferencia bancaria", amount: 2075.00, date: "2026-04-06", type: "income" },
+          { id: "t4", description: "Transferencia bancaria recibida", amount: 200.00, date: "2026-04-06", type: "income" }
         ]
       }
     ]
@@ -821,24 +758,31 @@
       return;
     }
 
-    const tx = currentUser.transactions[0];
-    const amountClass = tx.type === 'income' ? 'positive' : 'negative';
-    const sign = tx.type === 'income' ? '+' : '-';
-    const icon = '<i class="fas fa-check-circle"></i>';
-    const formattedDate = getFormattedDate(tx.date);
+    // Mostrar todas las transacciones (ordenadas por fecha descendente)
+    const sortedTransactions = [...currentUser.transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
     
-    container.innerHTML = `
-      <div class="transaction-item">
-        <div class="transaction-info">
-          <div class="transaction-icon">${icon}</div>
-          <div class="transaction-details">
-            <h4>${escapeHtml(tx.description)}</h4>
-            <p>${formattedDate}</p>
+    let html = '';
+    sortedTransactions.forEach(tx => {
+      const amountClass = tx.type === 'income' ? 'positive' : 'negative';
+      const sign = tx.type === 'income' ? '+' : '-';
+      const icon = tx.type === 'income' ? '<i class="fas fa-arrow-down"></i>' : '<i class="fas fa-arrow-up"></i>';
+      const formattedDate = getFormattedDate(tx.date);
+      
+      html += `
+        <div class="transaction-item">
+          <div class="transaction-info">
+            <div class="transaction-icon">${icon}</div>
+            <div class="transaction-details">
+              <h4>${escapeHtml(tx.description)}</h4>
+              <p>${formattedDate}</p>
+            </div>
           </div>
+          <div class="transaction-amount ${amountClass}">${sign} ${formatMoney(Math.abs(tx.amount))}</div>
         </div>
-        <div class="transaction-amount ${amountClass}">${sign} ${formatMoney(Math.abs(tx.amount))}</div>
-      </div>
-    `;
+      `;
+    });
+    
+    container.innerHTML = html;
   }
 
   function escapeHtml(str) {
@@ -911,9 +855,9 @@
         const action = item.getAttribute('data-action');
         if (action === 'inicio') {
           document.querySelector('.dashboard-content')?.scrollTo({ top: 0, behavior: 'smooth' });
-          showToast('✨ Inicio · Para más funciones adquiere tu Póliza de Protección');
+          showToast('✨ Inicio · Para acceder a más funciones, regulariza tus incumplimientos tributarios');
         } else {
-          showToast('🔒 Póliza de Protección de Crédito requerida');
+          showToast('⚠️ Acceso restringido · Regulariza tus incumplimientos tributarios para usar esta función');
         }
         resetInactivityTimer();
       });
