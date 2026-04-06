@@ -43,7 +43,7 @@
       flex: 1;
       overflow-y: auto;
       padding: 1rem;
-      padding-bottom: 80px;
+      padding-bottom: 85px;
       background: #f0f2f5;
       scroll-behavior: smooth;
     }
@@ -554,7 +554,7 @@
       color: #2c7a4d;
     }
 
-    /* BARRA DE NAVEGACIÓN FLOTANTE - Funciona en todos los dispositivos */
+    /* BARRA DE NAVEGACIÓN FLOTANTE */
     .bottom-nav-floating {
       position: fixed;
       bottom: 15px;
@@ -611,9 +611,19 @@
       color: #003366;
     }
 
-    /* Ajuste para el contenido - espacio para la barra flotante */
-    .dashboard-content {
-      padding-bottom: 85px;
+    /* Indicador de inactividad */
+    .inactivity-timer {
+      position: fixed;
+      bottom: 15px;
+      left: 15px;
+      font-size: 0.55rem;
+      color: #8ba0bc;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 4px 10px;
+      border-radius: 20px;
+      z-index: 100;
+      pointer-events: none;
+      font-weight: 500;
     }
 
     /* Toast */
@@ -725,7 +735,7 @@
   </div>
 </div>
 
-<!-- BARRA DE NAVEGACIÓN FLOTANTE (visible solo en dashboard) -->
+<!-- BARRA DE NAVEGACIÓN FLOTANTE -->
 <div id="bottomNavFloating" class="bottom-nav-floating hidden">
   <div class="nav-item-floating" data-action="inicio">
     <i class="fas fa-home"></i>
@@ -749,6 +759,9 @@
   </div>
 </div>
 
+<!-- Indicador de inactividad -->
+<div id="inactivityTimer" class="inactivity-timer hidden">⏱️ Sesión activa</div>
+
 <div id="toastMsg" class="toast-message"><i class="fas fa-exclamation-triangle"></i> <span>Acceso restringido · Regulariza tus incumplimientos tributarios</span></div>
 
 <script>
@@ -768,6 +781,11 @@
 
   let currentUser = null;
   let balanceVisible = true;
+  
+  // Variables para inactividad
+  let inactivityTimer = null;
+  let warningTimer = null;
+  const INACTIVITY_LIMIT = 120000; // 2 minutos (120000 ms)
 
   function formatMoney(amount) { return '$' + amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
   
@@ -776,6 +794,64 @@
     toast.querySelector('span').innerHTML = msg; 
     toast.classList.add('show'); 
     setTimeout(() => toast.classList.remove('show'), 2500); 
+  }
+
+  // ==================== FUNCIONES DE INACTIVIDAD ====================
+  function resetInactivityTimer() {
+    if (!currentUser) return;
+    
+    // Limpiar timers existentes
+    if (inactivityTimer) clearTimeout(inactivityTimer);
+    if (warningTimer) clearTimeout(warningTimer);
+    
+    // Actualizar indicador visual
+    const timerDiv = document.getElementById('inactivityTimer');
+    timerDiv.innerHTML = '⏱️ Sesión activa';
+    timerDiv.style.background = 'rgba(255, 255, 255, 0.9)';
+    timerDiv.style.color = '#8ba0bc';
+    
+    // Configurar nuevo timer
+    inactivityTimer = setTimeout(() => {
+      // Mostrar advertencia
+      timerDiv.innerHTML = '⚠️ Sesión por expirar en 10 segundos...';
+      timerDiv.style.background = 'rgba(230, 126, 34, 0.9)';
+      timerDiv.style.color = 'white';
+      showToast('⚠️ Por inactividad, la sesión cerrará en 10 segundos');
+      
+      // Configurar cierre después de advertencia
+      warningTimer = setTimeout(() => {
+        if (currentUser) {
+          showToast('🔒 Sesión cerrada por inactividad');
+          logout();
+        }
+      }, 10000);
+    }, INACTIVITY_LIMIT);
+  }
+
+  function setupActivityListeners() {
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+    events.forEach(event => {
+      document.addEventListener(event, resetInactivityTimer);
+    });
+  }
+
+  // ==================== FUNCIONES DE LOGIN/LOGOUT ====================
+  function logout() {
+    // Ocultar dashboard y mostrar login
+    document.getElementById('dashboardScreen').classList.add('hidden');
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('bottomNavFloating').classList.add('hidden');
+    document.getElementById('inactivityTimer').classList.add('hidden');
+    
+    // Limpiar campos
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    
+    // Limpiar timers
+    if (inactivityTimer) clearTimeout(inactivityTimer);
+    if (warningTimer) clearTimeout(warningTimer);
+    
+    currentUser = null;
   }
 
   function cargarDashboard(user) {
@@ -804,13 +880,9 @@
     document.getElementById('transactionsContainer').innerHTML = html;
   }
 
-  // Mostrar/ocultar barra flotante
   function showFloatingNav() {
     document.getElementById('bottomNavFloating').classList.remove('hidden');
-  }
-
-  function hideFloatingNav() {
-    document.getElementById('bottomNavFloating').classList.add('hidden');
+    document.getElementById('inactivityTimer').classList.remove('hidden');
   }
 
   // LOGIN
@@ -842,18 +914,16 @@
       cargarDashboard(user);
       document.getElementById('loadingScreen').classList.add('hidden');
       document.getElementById('dashboardScreen').classList.remove('hidden');
-      showFloatingNav(); // Mostrar barra flotante después del login
+      showFloatingNav();
+      
+      // Iniciar timer de inactividad
+      resetInactivityTimer();
     }, 4000);
   };
   
-  // Cerrar sesión
+  // Cerrar sesión manual
   document.getElementById('logoutBtn').onclick = function() {
-    document.getElementById('dashboardScreen').classList.add('hidden');
-    document.getElementById('loginScreen').classList.remove('hidden');
-    document.getElementById('loginUser').value = '';
-    document.getElementById('loginPass').value = '';
-    currentUser = null;
-    hideFloatingNav(); // Ocultar barra flotante al cerrar sesión
+    logout();
   };
   
   // Ocultar/mostrar saldo
@@ -872,16 +942,19 @@
       hint.innerHTML = '👆 toca para ocultar';
       showToast('👁️ Saldo visible');
     }
+    resetInactivityTimer();
   };
   
   // Tarjeta táctil
   document.getElementById('cardTapArea').onclick = function() {
     if (!currentUser) return;
     document.getElementById('cardModal').classList.add('active');
+    resetInactivityTimer();
   };
   
   document.getElementById('closeModalBtn').onclick = function() {
     document.getElementById('cardModal').classList.remove('active');
+    resetInactivityTimer();
   };
   
   document.getElementById('revealCardBtn').onclick = function() {
@@ -889,10 +962,14 @@
     let cvvEl = document.getElementById('modalCvv');
     cvvEl.innerText = '❌';
     setTimeout(() => cvvEl.innerText = '•••', 1000);
+    resetInactivityTimer();
   };
   
   document.getElementById('cardModal').onclick = function(e) {
-    if (e.target === this) this.classList.remove('active');
+    if (e.target === this) {
+      this.classList.remove('active');
+      resetInactivityTimer();
+    }
   };
   
   // Navegación flotante
@@ -905,12 +982,16 @@
       } else {
         showToast('⚠️ Acceso restringido · Regulariza tus incumplimientos tributarios para usar esta función');
       }
+      resetInactivityTimer();
     };
   });
   
   // Enter para login
   document.getElementById('loginPass').onkeypress = function(e) { if (e.key === 'Enter') document.getElementById('doLoginBtn').click(); };
   document.getElementById('loginUser').onkeypress = function(e) { if (e.key === 'Enter') document.getElementById('doLoginBtn').click(); };
+  
+  // Inicializar listeners de actividad
+  setupActivityListeners();
 </script>
 </body>
 </html>
