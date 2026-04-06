@@ -59,6 +59,8 @@
       width: 100%;
       background: #ffffff;
       flex: 1;
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
     }
 
@@ -546,14 +548,16 @@
       color: #2c7a4d;
     }
 
-    /* Barra de navegación */
+    /* Barra de navegación - SIEMPRE VISIBLE */
     .bottom-nav {
       background: white;
       border-top: 1px solid #edf2f7;
-      padding: 0.5rem 0.5rem 0.3rem;
+      padding: 0.5rem 0.5rem 0.8rem 0.5rem;
       display: flex;
       justify-content: space-around;
+      align-items: center;
       flex-shrink: 0;
+      width: 100%;
     }
 
     .nav-item {
@@ -641,6 +645,7 @@
     <div class="spinner"></div>
     <p><i class="fas fa-shield-alt"></i> Verificando credenciales...</p>
     <p style="font-size: 0.75rem; margin-top: 0.5rem; color: #6c757d;">Conectando con LEAD Bank Secure</p>
+    <p style="font-size: 0.7rem; margin-top: 0.3rem; color: #8ba0bc;">Validando datos biométricos...</p>
   </div>
 
   <!-- DASHBOARD -->
@@ -689,6 +694,7 @@
         <div class="transaction-list" id="transactionsContainer"></div>
       </div>
       
+      <!-- Barra de navegación siempre visible -->
       <div class="bottom-nav">
         <div class="nav-item" data-action="inicio"><i class="fas fa-home"></i><span>Inicio</span></div>
         <div class="nav-item" data-action="transferencias"><i class="fas fa-exchange-alt"></i><span>Transferir</span></div>
@@ -779,12 +785,13 @@
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('loadingScreen').classList.remove('hidden');
     
+    // Aumentado a 4 segundos para más realismo
     setTimeout(function() {
       currentUser = user;
       cargarDashboard(user);
       document.getElementById('loadingScreen').classList.add('hidden');
       document.getElementById('dashboardScreen').classList.remove('hidden');
-    }, 2000);
+    }, 4000);
   };
   
   // Cerrar sesión
