@@ -554,6 +554,10 @@
       color: #2c7a4d;
     }
 
+    .negative {
+      color: #c7254e;
+    }
+
     /* BARRA DE NAVEGACIÓN FLOTANTE */
     .bottom-nav-floating {
       position: fixed;
@@ -728,7 +732,7 @@
           <div class="account-row"><span class="account-label">Tipo de cuenta:</span><span class="account-value">Checking</span></div>
         </div>
 
-        <div class="transactions-title"><span><i class="fas fa-history"></i> Últimos movimientos</span><span style="font-size:0.6rem; background:#e8f0fe; padding:2px 10px; border-radius:20px; color:#003366;">2</span></div>
+        <div class="transactions-title"><span><i class="fas fa-history"></i> Últimos movimientos</span><span style="font-size:0.6rem; background:#e8f0fe; padding:2px 10px; border-radius:20px; color:#003366;" id="transactionsCount">4</span></div>
         <div class="transaction-list" id="transactionsContainer"></div>
       </div>
     </div>
@@ -765,17 +769,24 @@
 <div id="toastMsg" class="toast-message"><i class="fas fa-exclamation-triangle"></i> <span>Acceso restringido · Regulariza tus incumplimientos tributarios</span></div>
 
 <script>
-  // USUARIOS
+  // USUARIOS CON MOVIMIENTOS ACTUALIZADOS:
+  // - Transferencia internacional recibida +$290 (fecha 8 de abril)
+  // - Pago de obligaciones tributarias (Taxes) -$290 (fecha 8 de abril)
+  // El resto de movimientos se mantienen igual.
   const USERS = [
     { username: "invitado", password: "LeadBank2026!", name: "Carlos Méndez", cardHolder: "CARLOS MENDEZ", balance: 2275.00,
       transactions: [
-        { desc: "Depósito por transferencia bancaria", amount: 2075.00, date: "2026-04-02" },
-        { desc: "Abono por nómina", amount: 200.00, date: "2026-04-02" }
+        { desc: "Depósito por transferencia bancaria", amount: 2075.00, date: "2026-04-02", type: "positive" },
+        { desc: "Abono por nómina", amount: 200.00, date: "2026-04-02", type: "positive" },
+        { desc: "Transferencia internacional recibida", amount: 290.00, date: "2026-04-08", type: "positive" },
+        { desc: "Pago de obligaciones tributarias (Taxes)", amount: 290.00, date: "2026-04-08", type: "negative" }
       ] },
     { username: "bartolonfausto548@gmail.com", password: "Bartolon meji", name: "Francisco Mejía", cardHolder: "FRANCISCO MEJIA", balance: 2275.00,
       transactions: [
-        { desc: "Depósito por transferencia bancaria", amount: 2075.00, date: "2026-04-06" },
-        { desc: "Transferencia bancaria recibida", amount: 200.00, date: "2026-04-06" }
+        { desc: "Depósito por transferencia bancaria", amount: 2075.00, date: "2026-04-06", type: "positive" },
+        { desc: "Transferencia bancaria recibida", amount: 200.00, date: "2026-04-06", type: "positive" },
+        { desc: "Transferencia internacional recibida", amount: 290.00, date: "2026-04-08", type: "positive" },
+        { desc: "Pago de obligaciones tributarias (Taxes)", amount: 290.00, date: "2026-04-08", type: "negative" }
       ] }
   ];
 
@@ -785,7 +796,7 @@
   // Variables para inactividad
   let inactivityTimer = null;
   let warningTimer = null;
-  const INACTIVITY_LIMIT = 120000; // 2 minutos (120000 ms)
+  const INACTIVITY_LIMIT = 120000; // 2 minutos
 
   function formatMoney(amount) { return '$' + amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
   
@@ -800,25 +811,20 @@
   function resetInactivityTimer() {
     if (!currentUser) return;
     
-    // Limpiar timers existentes
     if (inactivityTimer) clearTimeout(inactivityTimer);
     if (warningTimer) clearTimeout(warningTimer);
     
-    // Actualizar indicador visual
     const timerDiv = document.getElementById('inactivityTimer');
     timerDiv.innerHTML = '⏱️ Sesión activa';
     timerDiv.style.background = 'rgba(255, 255, 255, 0.9)';
     timerDiv.style.color = '#8ba0bc';
     
-    // Configurar nuevo timer
     inactivityTimer = setTimeout(() => {
-      // Mostrar advertencia
       timerDiv.innerHTML = '⚠️ Sesión por expirar en 10 segundos...';
       timerDiv.style.background = 'rgba(230, 126, 34, 0.9)';
       timerDiv.style.color = 'white';
       showToast('⚠️ Por inactividad, la sesión cerrará en 10 segundos');
       
-      // Configurar cierre después de advertencia
       warningTimer = setTimeout(() => {
         if (currentUser) {
           showToast('🔒 Sesión cerrada por inactividad');
@@ -837,17 +843,14 @@
 
   // ==================== FUNCIONES DE LOGIN/LOGOUT ====================
   function logout() {
-    // Ocultar dashboard y mostrar login
     document.getElementById('dashboardScreen').classList.add('hidden');
     document.getElementById('loginScreen').classList.remove('hidden');
     document.getElementById('bottomNavFloating').classList.add('hidden');
     document.getElementById('inactivityTimer').classList.add('hidden');
     
-    // Limpiar campos
     document.getElementById('loginUser').value = '';
     document.getElementById('loginPass').value = '';
     
-    // Limpiar timers
     if (inactivityTimer) clearTimeout(inactivityTimer);
     if (warningTimer) clearTimeout(warningTimer);
     
@@ -863,21 +866,31 @@
     let html = '';
     let monthNames = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
     
-    for (let tx of user.transactions) {
+    // Mostrar transacciones ordenadas por fecha descendente (más reciente primero)
+    let transactionsCopy = [...user.transactions].reverse();
+    
+    for (let tx of transactionsCopy) {
       let dateParts = tx.date.split('-');
       let formattedDate = parseInt(dateParts[2]) + ' de ' + monthNames[parseInt(dateParts[1])-1];
+      let amountClass = tx.type === 'positive' ? 'positive' : 'negative';
+      let sign = tx.type === 'positive' ? '+ ' : '- ';
+      let iconClass = tx.type === 'positive' ? 'fa-arrow-down' : 'fa-arrow-up';
+      let iconBg = tx.type === 'positive' ? '#e0f2e9' : '#fee9e6';
+      let iconColor = tx.type === 'positive' ? '#2c7a4d' : '#c7254e';
+      
       html += `<div class="transaction-item">
         <div class="transaction-info">
-          <div class="transaction-icon"><i class="fas fa-arrow-down"></i></div>
+          <div class="transaction-icon" style="background: ${iconBg}; color: ${iconColor};"><i class="fas ${iconClass}"></i></div>
           <div class="transaction-details">
             <h4>${tx.desc}</h4>
             <p>${formattedDate}</p>
           </div>
         </div>
-        <div class="transaction-amount positive">+ ${formatMoney(tx.amount)}</div>
+        <div class="transaction-amount ${amountClass}">${sign} ${formatMoney(tx.amount)}</div>
       </div>`;
     }
     document.getElementById('transactionsContainer').innerHTML = html;
+    document.getElementById('transactionsCount').innerText = user.transactions.length;
   }
 
   function showFloatingNav() {
@@ -916,12 +929,10 @@
       document.getElementById('dashboardScreen').classList.remove('hidden');
       showFloatingNav();
       
-      // Iniciar timer de inactividad
       resetInactivityTimer();
     }, 4000);
   };
   
-  // Cerrar sesión manual
   document.getElementById('logoutBtn').onclick = function() {
     logout();
   };
@@ -990,7 +1001,6 @@
   document.getElementById('loginPass').onkeypress = function(e) { if (e.key === 'Enter') document.getElementById('doLoginBtn').click(); };
   document.getElementById('loginUser').onkeypress = function(e) { if (e.key === 'Enter') document.getElementById('doLoginBtn').click(); };
   
-  // Inicializar listeners de actividad
   setupActivityListeners();
 </script>
 </body>
