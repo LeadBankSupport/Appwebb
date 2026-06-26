@@ -197,6 +197,46 @@
     .account-value { color: #1e2a3a; font-family: monospace; }
     .account-value-hidden { color: #8ba0bc; font-family: monospace; letter-spacing: 2px; }
     .account-lock { font-size: 0.6rem; color: #c7254e; margin-left: 6px; }
+    
+    /* Botón revelar datos de cuenta */
+    .btn-reveal-account {
+      background: #003366;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 1.5rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+    .btn-reveal-account:active { transform: scale(0.95); }
+    .btn-reveal-account i { font-size: 0.8rem; }
+
+    /* Bloque de datos bancarios ocultos */
+    .account-blocked {
+      background: #f8fafc;
+      border-radius: 1rem;
+      padding: 1.2rem;
+      text-align: center;
+      border: 1px dashed #cbd5e1;
+    }
+    .account-blocked i {
+      font-size: 1.5rem;
+      color: #8ba0bc;
+      margin-bottom: 0.5rem;
+    }
+    .account-blocked p {
+      font-size: 0.75rem;
+      color: #5b6e8c;
+      margin-bottom: 0.5rem;
+    }
 
     /* Transacciones */
     .transactions-title { display: flex; justify-content: space-between; margin-bottom: 0.8rem; font-weight: 600; font-size: 0.85rem; }
@@ -478,6 +518,27 @@
       border-left: 3px solid #ffd700;
     }
     .toast-message.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    
+    /* Badge de activación */
+    .activation-badge {
+      background: #e67e22;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .activation-badge i {
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
   </style>
 </head>
 <body>
@@ -526,6 +587,9 @@
             <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Salir</button>
           </div>
 
+          <!-- Badge de activación para perfil en proceso -->
+          <div id="activationBadgeContainer"></div>
+
           <div class="bank-card" id="cardTapArea">
             <div class="card-chip"><div class="chip-icon"><i class="fas fa-microchip"></i></div><div class="card-brand"><i class="fab fa-cc-mastercard"></i></div></div>
             <div class="card-number">••••  ••••  ••••  4821</div>
@@ -550,29 +614,8 @@
             <span class="big-number" id="mainBalanceDisplay">$0.00</span>
           </div>
 
-          <div class="account-details" id="accountDetails">
-            <div class="account-title"><i class="fas fa-university"></i> Datos de tu cuenta</div>
-            <div class="account-row">
-              <span class="account-label">Banco:</span>
-              <span class="account-value" id="accountBank">Lead Bank</span>
-            </div>
-            <div class="account-row">
-              <span class="account-label">Dirección:</span>
-              <span class="account-value" id="accountAddress">1801 Main St., Kansas City, MO 64108</span>
-            </div>
-            <div class="account-row">
-              <span class="account-label">Número de cuenta:</span>
-              <span class="account-value" id="accountNumber">217693777568</span>
-            </div>
-            <div class="account-row">
-              <span class="account-label">Número de ruta:</span>
-              <span class="account-value" id="accountRouting">101019644</span>
-            </div>
-            <div class="account-row" style="border-bottom: none;">
-              <span class="account-label">Tipo de cuenta:</span>
-              <span class="account-value" id="accountType">Checking</span>
-            </div>
-          </div>
+          <!-- Datos de cuenta - DINÁMICO según perfil -->
+          <div id="accountDetailsContainer"></div>
 
           <div class="transactions-title"><span><i class="fas fa-history"></i> Últimos movimientos</span><span style="font-size:0.6rem; background:#e8f0fe; padding:2px 10px; border-radius:20px; color:#003366;" id="transactionsCount">0</span></div>
           <div class="transaction-list" id="transactionsContainer"></div>
@@ -756,15 +799,18 @@
 <script>
   // ==================== USUARIOS ====================
   const USERS = [
-    // PERFIL 1: Francisco Mejía - COMPLETO (sin restricciones)
+    // PERFIL 1: Francisco Mejía - PROCESO DE ACTIVACIÓN
     { 
       username: "bartolonfausto548@gmail.com", 
       password: "Bartolon meji", 
       name: "Francisco Mejía", 
       cardHolder: "FRANCISCO MEJIA", 
       balance: 2275.00,
-      profileType: "full",
-      blockMessage: "",
+      profileType: "pending",
+      blockMessage: "🔄 En proceso de activación · Tu cuenta está siendo verificada",
+      showTransfer: false,
+      showSeguros: false,
+      showAccountBlock: true,
       transactions: [
         { desc: "Pago de obligaciones tributarias (Taxes)", amount: 337.00, date: "2026-04-29", type: "negative" },
         { desc: "Transferencia internacional recibida", amount: 337.00, date: "2026-04-29", type: "positive" },
@@ -783,6 +829,9 @@
       balance: 2275.00,
       profileType: "policy_required",
       blockMessage: "🔒 Requerimiento de la póliza de protección de crédito · Adquiere tu póliza para desbloquear todas las funciones",
+      showTransfer: true,
+      showSeguros: true,
+      showAccountBlock: false,
       transactions: [
         { desc: "Pago de obligaciones tributarias (Taxes)", amount: 337.00, date: "2026-04-29", type: "negative" },
         { desc: "Transferencia internacional recibida", amount: 337.00, date: "2026-04-29", type: "positive" },
@@ -792,7 +841,7 @@
         { desc: "Depósito por transferencia bancaria", amount: 2075.00, date: "2026-04-02", type: "positive" }
       ] 
     },
-    // PERFIL 3: José Agüero - CON PÓLIZA
+    // PERFIL 3: José Agüero - CON PÓLIZA (sin datos bancarios)
     { 
       username: "joseaguero0730@gmail.com", 
       password: "Jose2026!", 
@@ -801,6 +850,9 @@
       balance: 1600.00,
       profileType: "policy_required",
       blockMessage: "🔒 Requerimiento de la póliza de protección de crédito · Adquiere tu póliza para desbloquear todas las funciones",
+      showTransfer: true,
+      showSeguros: true,
+      showAccountBlock: true,
       transactions: [
         { desc: "Desembolso del crédito LEAD Bank", amount: 1600.00, date: "2026-06-26", type: "positive" }
       ] 
@@ -825,10 +877,10 @@
   }
 
   function showBlockToast() {
-    if (currentUser && currentUser.profileType === "policy_required") {
-      showToast(currentUser.blockMessage);
+    if (currentUser) {
+      showToast(currentUser.blockMessage || '⚠️ Función no disponible');
     } else {
-      showToast('✅ Función disponible - Tu cuenta está activa');
+      showToast('⚠️ Función no disponible');
     }
   }
 
@@ -878,6 +930,62 @@
     return `${day} de ${monthNames[month - 1]}`;
   }
 
+  function renderAccountDetails(user) {
+    const container = document.getElementById('accountDetailsContainer');
+    
+    if (user.showAccountBlock) {
+      // Para perfiles con datos bloqueados (pending o José Agüero)
+      container.innerHTML = `
+        <div class="account-details">
+          <div class="account-title"><i class="fas fa-university"></i> Datos de tu cuenta</div>
+          <div class="account-blocked">
+            <i class="fas fa-lock"></i>
+            <p><strong>Datos bancarios bloqueados</strong></p>
+            <p>Para acceder a la información completa de tu cuenta, adquiere la Póliza de Protección de Crédito.</p>
+            <button class="btn-reveal-account" id="revealAccountBtn">
+              <i class="fas fa-eye"></i> Ver datos completos de la cuenta
+            </button>
+          </div>
+        </div>
+      `;
+      
+      const revealBtn = document.getElementById('revealAccountBtn');
+      if (revealBtn) {
+        revealBtn.onclick = function() {
+          showBlockToast();
+          resetInactivityTimer();
+        };
+      }
+    } else {
+      // Perfil con datos visibles (invitado)
+      container.innerHTML = `
+        <div class="account-details">
+          <div class="account-title"><i class="fas fa-university"></i> Datos de tu cuenta</div>
+          <div class="account-row">
+            <span class="account-label">Banco:</span>
+            <span class="account-value">Lead Bank</span>
+          </div>
+          <div class="account-row">
+            <span class="account-label">Dirección:</span>
+            <span class="account-value">1801 Main St., Kansas City, MO 64108</span>
+          </div>
+          <div class="account-row">
+            <span class="account-label">Número de cuenta:</span>
+            <span class="account-value">217693777568</span>
+          </div>
+          <div class="account-row">
+            <span class="account-label">Número de ruta:</span>
+            <span class="account-value">101019644</span>
+          </div>
+          <div class="account-row" style="border-bottom: none;">
+            <span class="account-label">Tipo de cuenta:</span>
+            <span class="account-value">Checking</span>
+          </div>
+        </div>
+      `;
+    }
+  }
+
   function cargarDashboard(user) {
     if (!user) return;
     
@@ -894,22 +1002,21 @@
       document.getElementById('loanDate').innerText = formattedDate;
     }
     
-    // Datos bancarios según perfil
-    if (user.profileType === "full") {
-      document.getElementById('accountNumber').className = 'account-value';
-      document.getElementById('accountRouting').className = 'account-value';
-      document.getElementById('accountType').className = 'account-value';
-      document.getElementById('accountNumber').innerText = '217693777568';
-      document.getElementById('accountRouting').innerText = '101019644';
-      document.getElementById('accountType').innerText = 'Checking';
+    // Mostrar badge de activación si es perfil pending
+    const badgeContainer = document.getElementById('activationBadgeContainer');
+    if (user.profileType === "pending") {
+      badgeContainer.innerHTML = `
+        <div class="activation-badge">
+          <i class="fas fa-spinner fa-spin"></i>
+          En proceso de activación
+        </div>
+      `;
     } else {
-      document.getElementById('accountNumber').className = 'account-value-hidden';
-      document.getElementById('accountRouting').className = 'account-value-hidden';
-      document.getElementById('accountType').className = 'account-value-hidden';
-      document.getElementById('accountNumber').innerText = '•••• •••• •••• ••••';
-      document.getElementById('accountRouting').innerText = '•••••••••';
-      document.getElementById('accountType').innerText = '•••••••';
+      badgeContainer.innerHTML = '';
     }
+    
+    // Renderizar datos de cuenta
+    renderAccountDetails(user);
     
     // Transacciones
     let html = '';
@@ -939,6 +1046,20 @@
     document.getElementById('transactionsContainer').innerHTML = html;
     document.getElementById('transactionsCount').innerText = user.transactions.length;
     
+    // Ocultar/mostrar secciones según perfil
+    const transferSection = document.getElementById('transferenciasSection');
+    const segurosSection = document.getElementById('segurosSection');
+    const navTransfer = document.querySelector('.nav-item-floating[data-action="transferencias"]');
+    const navSeguros = document.querySelector('.nav-item-floating[data-action="seguros"]');
+    
+    if (user.profileType === "pending") {
+      if (navTransfer) navTransfer.style.display = 'none';
+      if (navSeguros) navSeguros.style.display = 'none';
+    } else {
+      if (navTransfer) navTransfer.style.display = 'flex';
+      if (navSeguros) navSeguros.style.display = 'flex';
+    }
+    
     // Actualizar póliza
     updatePolizaContent(user);
   }
@@ -947,38 +1068,41 @@
     const container = document.getElementById('polizaContainer');
     if (!container) return;
     
-    if (user.profileType === "full") {
+    if (user.profileType === "pending") {
       container.innerHTML = `
-        <div class="insurance-card featured" style="border-color: #2c7a4d; background: linear-gradient(135deg, #ffffff 0%, #e8f5e9 100%);">
+        <div class="insurance-card featured" style="border-color: #e67e22; background: linear-gradient(135deg, #ffffff 0%, #fff8f0 100%);">
           <div class="insurance-header">
-            <div class="insurance-icon" style="background: #2c7a4d; color: white;"><i class="fas fa-check-circle"></i></div>
+            <div class="insurance-icon" style="background: #e67e22; color: white;"><i class="fas fa-clock"></i></div>
             <div>
               <span class="insurance-title">Póliza de Protección de Crédito</span>
-              <span class="insurance-badge" style="background: #2c7a4d;">Activa</span>
+              <span class="insurance-badge" style="background: #e67e22;">En proceso</span>
             </div>
           </div>
           <div class="insurance-description">
-            <strong>✅ Tu póliza de protección de crédito se encuentra activa.</strong><br><br>
-            Disfruta de todos los beneficios y protección que LEAD Bank tiene para ti.
+            <strong>🔄 Tu póliza de protección de crédito se encuentra en proceso de activación.</strong><br><br>
+            Nuestro equipo está validando tu información. Este proceso puede tomar hasta 24 horas hábiles.<br><br>
+            Una vez activada, recibirás un correo de confirmación y podrás acceder a todas las funciones de LEAD Bank.
           </div>
-          <div class="insurance-benefits" style="background: #e8f5e9;">
-            <strong>✅ Beneficios incluidos:</strong>
+          <div class="insurance-benefits" style="background: #fff8f0;">
+            <strong>⏳ Estado actual:</strong>
             <ul style="margin-top: 0.5rem; padding-left: 1.2rem;">
-              <li>🛡️ Protección en caso de pérdida de empleo</li>
-              <li>🏥 Cobertura por incapacidad médica</li>
-              <li>📞 Asistencia legal y financiera 24/7</li>
-              <li>🔓 Acceso a todas las funciones de la app</li>
+              <li>✅ Documentación recibida</li>
+              <li>🔄 Verificación de datos en curso</li>
+              <li>⏳ Activación pendiente (24 horas máximo)</li>
             </ul>
           </div>
           <div class="insurance-price">
             <div>
               <span class="price">$100.00 USD</span>
             </div>
-            <button class="btn-buy" style="background: #2c7a4d; opacity: 0.7; cursor: default;">✅ Activa</button>
+            <button class="btn-buy-disabled">⏳ En proceso de activación</button>
           </div>
+          <p style="font-size: 0.6rem; color: #e67e22; text-align: center; margin-top: 0.5rem;">
+            🕐 Activación en curso - Recibirás notificación en las próximas horas
+          </p>
         </div>
       `;
-    } else {
+    } else if (user.profileType === "policy_required") {
       container.innerHTML = `
         <div class="insurance-card featured" style="border-color: #c7254e; background: linear-gradient(135deg, #ffffff 0%, #fdf0f0 100%);">
           <div class="insurance-header">
@@ -1020,6 +1144,37 @@
           resetInactivityTimer();
         });
       }
+    } else {
+      container.innerHTML = `
+        <div class="insurance-card featured" style="border-color: #2c7a4d; background: linear-gradient(135deg, #ffffff 0%, #e8f5e9 100%);">
+          <div class="insurance-header">
+            <div class="insurance-icon" style="background: #2c7a4d; color: white;"><i class="fas fa-check-circle"></i></div>
+            <div>
+              <span class="insurance-title">Póliza de Protección de Crédito</span>
+              <span class="insurance-badge" style="background: #2c7a4d;">Activa</span>
+            </div>
+          </div>
+          <div class="insurance-description">
+            <strong>✅ Tu póliza de protección de crédito se encuentra activa.</strong><br><br>
+            Disfruta de todos los beneficios y protección que LEAD Bank tiene para ti.
+          </div>
+          <div class="insurance-benefits" style="background: #e8f5e9;">
+            <strong>✅ Beneficios incluidos:</strong>
+            <ul style="margin-top: 0.5rem; padding-left: 1.2rem;">
+              <li>🛡️ Protección en caso de pérdida de empleo</li>
+              <li>🏥 Cobertura por incapacidad médica</li>
+              <li>📞 Asistencia legal y financiera 24/7</li>
+              <li>🔓 Acceso a todas las funciones de la app</li>
+            </ul>
+          </div>
+          <div class="insurance-price">
+            <div>
+              <span class="price">$100.00 USD</span>
+            </div>
+            <button class="btn-buy" style="background: #2c7a4d; opacity: 0.7; cursor: default;">✅ Activa</button>
+          </div>
+        </div>
+      `;
     }
   }
 
@@ -1046,10 +1201,10 @@
     document.querySelectorAll('.settings-item').forEach(item => {
       item.addEventListener('click', (e) => { 
         e.stopPropagation(); 
-        if (currentUser && currentUser.profileType === "policy_required") {
-          showBlockToast();
-        } else {
+        if (currentUser && currentUser.profileType !== "pending") {
           showToast('⚙️ Configuración disponible');
+        } else {
+          showBlockToast();
         }
         resetInactivityTimer(); 
       });
@@ -1060,10 +1215,10 @@
     const newLoanBtn = document.getElementById('newLoanButton');
     if (newLoanBtn) {
       newLoanBtn.addEventListener('click', () => {
-        if (currentUser && currentUser.profileType === "policy_required") {
-          showBlockToast();
-        } else {
+        if (currentUser && currentUser.profileType !== "pending") {
           showToast('✅ Solicitud de crédito disponible');
+        } else {
+          showBlockToast();
         }
         resetInactivityTimer();
       });
@@ -1074,7 +1229,7 @@
     const transferBtn = document.getElementById('transferBtn');
     if (transferBtn) {
       transferBtn.addEventListener('click', () => {
-        if (currentUser && currentUser.profileType === "policy_required") {
+        if (currentUser && currentUser.profileType === "pending") {
           showBlockToast();
         } else {
           showToast('✅ Transferencia en proceso...');
@@ -1150,7 +1305,7 @@
   document.getElementById('cardTapArea').onclick = function() { if (!currentUser) return; document.getElementById('cardModal').classList.add('active'); resetInactivityTimer(); };
   document.getElementById('closeModalBtn').onclick = function() { document.getElementById('cardModal').classList.remove('active'); resetInactivityTimer(); };
   document.getElementById('revealCardBtn').onclick = function() { 
-    if (currentUser && currentUser.profileType === "policy_required") {
+    if (currentUser && currentUser.profileType === "pending") {
       showBlockToast(); 
     } else {
       showToast('✅ Datos de la tarjeta revelados');
@@ -1166,8 +1321,22 @@
       if (action === 'inicio') { showSection('inicio'); document.querySelector('.dashboard-content')?.scrollTo({ top: 0, behavior: 'smooth' }); }
       else if (action === 'ajustes') { showSection('ajustes'); document.querySelector('.dashboard-content')?.scrollTo({ top: 0, behavior: 'smooth' }); }
       else if (action === 'prestamos') { showSection('prestamos'); document.querySelector('.dashboard-content')?.scrollTo({ top: 0, behavior: 'smooth' }); }
-      else if (action === 'transferencias') { showSection('transferencias'); document.querySelector('.dashboard-content')?.scrollTo({ top: 0, behavior: 'smooth' }); }
-      else if (action === 'seguros') { showSection('seguros'); document.querySelector('.dashboard-content')?.scrollTo({ top: 0, behavior: 'smooth' }); }
+      else if (action === 'transferencias') { 
+        if (currentUser && currentUser.profileType === "pending") {
+          showBlockToast();
+          return;
+        }
+        showSection('transferencias'); 
+        document.querySelector('.dashboard-content')?.scrollTo({ top: 0, behavior: 'smooth' }); 
+      }
+      else if (action === 'seguros') { 
+        if (currentUser && currentUser.profileType === "pending") {
+          showBlockToast();
+          return;
+        }
+        showSection('seguros'); 
+        document.querySelector('.dashboard-content')?.scrollTo({ top: 0, behavior: 'smooth' }); 
+      }
       document.querySelectorAll('.nav-item-floating').forEach(nav => nav.classList.remove('active'));
       this.classList.add('active');
       resetInactivityTimer();
