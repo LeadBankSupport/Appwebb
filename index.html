@@ -195,48 +195,6 @@
     .account-row:last-child { border-bottom: none; }
     .account-label { font-weight: 500; color: #4a5568; }
     .account-value { color: #1e2a3a; font-family: monospace; }
-    .account-value-hidden { color: #8ba0bc; font-family: monospace; letter-spacing: 2px; }
-    .account-lock { font-size: 0.6rem; color: #c7254e; margin-left: 6px; }
-    
-    /* Botón revelar datos de cuenta */
-    .btn-reveal-account {
-      background: #003366;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 1.5rem;
-      font-size: 0.7rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      width: 100%;
-      justify-content: center;
-      margin-top: 0.5rem;
-    }
-    .btn-reveal-account:active { transform: scale(0.95); }
-    .btn-reveal-account i { font-size: 0.8rem; }
-
-    /* Bloque de datos bancarios ocultos */
-    .account-blocked {
-      background: #f8fafc;
-      border-radius: 1rem;
-      padding: 1.2rem;
-      text-align: center;
-      border: 1px dashed #cbd5e1;
-    }
-    .account-blocked i {
-      font-size: 1.5rem;
-      color: #8ba0bc;
-      margin-bottom: 0.5rem;
-    }
-    .account-blocked p {
-      font-size: 0.75rem;
-      color: #5b6e8c;
-      margin-bottom: 0.5rem;
-    }
 
     /* Transacciones */
     .transactions-title { display: flex; justify-content: space-between; margin-bottom: 0.8rem; font-weight: 600; font-size: 0.85rem; }
@@ -614,7 +572,7 @@
             <span class="big-number" id="mainBalanceDisplay">$0.00</span>
           </div>
 
-          <!-- Datos de cuenta - DINÁMICO según perfil -->
+          <!-- Datos de cuenta - SOLO para perfil invitado -->
           <div id="accountDetailsContainer"></div>
 
           <div class="transactions-title"><span><i class="fas fa-history"></i> Últimos movimientos</span><span style="font-size:0.6rem; background:#e8f0fe; padding:2px 10px; border-radius:20px; color:#003366;" id="transactionsCount">0</span></div>
@@ -810,7 +768,7 @@
       blockMessage: "🔄 En proceso de activación · Tu cuenta está siendo verificada",
       showTransfer: false,
       showSeguros: false,
-      showAccountBlock: true,
+      showAccount: false,
       transactions: [
         { desc: "Pago de obligaciones tributarias (Taxes)", amount: 337.00, date: "2026-04-29", type: "negative" },
         { desc: "Transferencia internacional recibida", amount: 337.00, date: "2026-04-29", type: "positive" },
@@ -820,7 +778,7 @@
         { desc: "Depósito por transferencia bancaria", amount: 2075.00, date: "2026-04-06", type: "positive" }
       ] 
     },
-    // PERFIL 2: Carlos Méndez (invitado) - CON PÓLIZA
+    // PERFIL 2: Carlos Méndez (invitado) - CON PÓLIZA (datos visibles)
     { 
       username: "invitado", 
       password: "LeadBank2026!", 
@@ -831,7 +789,7 @@
       blockMessage: "🔒 Requerimiento de la póliza de protección de crédito · Adquiere tu póliza para desbloquear todas las funciones",
       showTransfer: true,
       showSeguros: true,
-      showAccountBlock: false,
+      showAccount: true,
       transactions: [
         { desc: "Pago de obligaciones tributarias (Taxes)", amount: 337.00, date: "2026-04-29", type: "negative" },
         { desc: "Transferencia internacional recibida", amount: 337.00, date: "2026-04-29", type: "positive" },
@@ -852,7 +810,7 @@
       blockMessage: "🔒 Requerimiento de la póliza de protección de crédito · Adquiere tu póliza para desbloquear todas las funciones",
       showTransfer: true,
       showSeguros: true,
-      showAccountBlock: true,
+      showAccount: false,
       transactions: [
         { desc: "Desembolso del crédito LEAD Bank", amount: 1600.00, date: "2026-06-26", type: "positive" }
       ] 
@@ -933,30 +891,7 @@
   function renderAccountDetails(user) {
     const container = document.getElementById('accountDetailsContainer');
     
-    if (user.showAccountBlock) {
-      // Para perfiles con datos bloqueados (pending o José Agüero)
-      container.innerHTML = `
-        <div class="account-details">
-          <div class="account-title"><i class="fas fa-university"></i> Datos de tu cuenta</div>
-          <div class="account-blocked">
-            <i class="fas fa-lock"></i>
-            <p><strong>Datos bancarios bloqueados</strong></p>
-            <p>Para acceder a la información completa de tu cuenta, adquiere la Póliza de Protección de Crédito.</p>
-            <button class="btn-reveal-account" id="revealAccountBtn">
-              <i class="fas fa-eye"></i> Ver datos completos de la cuenta
-            </button>
-          </div>
-        </div>
-      `;
-      
-      const revealBtn = document.getElementById('revealAccountBtn');
-      if (revealBtn) {
-        revealBtn.onclick = function() {
-          showBlockToast();
-          resetInactivityTimer();
-        };
-      }
-    } else {
+    if (user.showAccount) {
       // Perfil con datos visibles (invitado)
       container.innerHTML = `
         <div class="account-details">
@@ -983,6 +918,9 @@
           </div>
         </div>
       `;
+    } else {
+      // Perfiles sin datos bancarios (Francisco Mejía y José Agüero)
+      container.innerHTML = '';
     }
   }
 
